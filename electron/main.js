@@ -3,7 +3,7 @@ var ipc = require("electron").ipcMain;
 
 const SerialPort = require("serialport");
 
-// list the vendorid for arduino and then creat a list of the productids with the descriptions on them
+// list the vendorId for arduino and then create a list of the productids with the descriptions on them
 let arduinoVendorId = 2341
 let arduinoProductIds = {
     "0001":  "Uno",
@@ -71,5 +71,26 @@ ipc.on("SerialPortsList", function(event, data) {
         }
         event.sender.send("SerialPortsListResponse", JSON.stringify(portsObject))
     });
-})
+});
 
+ipc.on("IsConnected", function(event, portToCheck) {
+    let portsObject = {};
+    SerialPort.list().then(function(data) {
+        // then go through each device
+        let found = false;
+        for(var i = 0; i < data.length; i++) {
+            // then check if the device is made by arduino
+            if(data[i].vendorId == arduinoVendorId) {
+                // then check if its path is the same as the portToCheck
+                if(data[i].path == portToCheck) {
+                    found = true;
+                    event.sender.send("IsConnectedResponse", true);
+                }
+            }
+        }
+        if(found == false) {
+            event.sender.send("IsConnectedResponse", false)
+        }
+        
+    });
+});

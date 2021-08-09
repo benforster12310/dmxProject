@@ -46,3 +46,29 @@ function getSerialDevices() {
     ipc.send("SerialPortsList", "");
 }
 getSerialDevices()
+
+let chooseDeviceBtn = document.getElementById("chooseDeviceBtn");
+chooseDeviceBtn.addEventListener("click", chooseDevice);
+
+function chooseDevice() {
+    // then get the currently selected device
+    let currentDeviceText = document.getElementById("dmxInterfaceSelect").innerHTML;
+    let currentDevicePort = document.getElementById("dmxInterfaceSelect").value;
+
+    // then send a request to the main process to make sure that the device is still available
+    ipc.on("IsConnectedResponse", function(event, data) {
+        if(data) {
+            // then the device is still connected so then proceed
+            useDevice()
+        }
+        else {
+            alert("The Device Is No Longer Connected, Please Refresh The List And Try Again");
+            getSerialDevices()
+        }
+    })
+    ipc.send("IsConnected", currentDevicePort)
+}
+
+function useDevice() {
+    alert("Using");
+}
