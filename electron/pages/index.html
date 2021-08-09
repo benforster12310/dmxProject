@@ -1,9 +1,24 @@
 <html>
     <head>
-        <link rel="stylesheet" href="bootstrap.css">
-        <link rel="stylesheet" href="stylesheet.css">
+        <link rel="stylesheet" href="common/bootstrap.css">
+        <link rel="stylesheet" href="common/stylesheet.css">
+        <script src="index.js" defer></script>
+        <title>Select Arduino DMX Interface</title>
     </head>
     <body>
-        <h1 class="title">Please Select The DMX Interface</h1>
+        <h1 class="title">Please Select The Arduino DMX Interface</h1>
+        <br/>
+        <br/>
+        <select id="dmxInterfaceSelect" class="btn button fullWidth" style="text-align-last:center;"></select>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <button class="btn button fullWidth" id="refreshListBtn">Refresh List</button>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <button class="btn button fullWidth" id="chooseDeviceBtn">Choose This Device</button>
     </body>
 </html>

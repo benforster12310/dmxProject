@@ -1,12 +1,14 @@
 .button {
     font-size: 250%;
     background-color: black;
-    color: white;
+    color: yellow;
     text-align: center;
+    border: 1px solid yellow;
 }
 .button:hover {
     cursor: pointer;
-    color: yellow;
+    color: white;
+    border: 1px solid white;
 }
 .fullWidth {
     width:100%;
@@ -22,4 +24,8 @@
     font-size: 300%;
     background-color: black;
     color: white;
+    text-align: center;
+}
+body {
+    background-color: black;
 }
