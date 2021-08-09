@@ -1,0 +1,25 @@
+.button {
+    font-size: 250%;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+.button:hover {
+    cursor: pointer;
+    color: yellow;
+}
+.fullWidth {
+    width:100%;
+}
+.halfWidth {
+    width: 49.7%;
+}
+.quarterWidth {
+    width: 24.7%;
+}
+.title {
+    width:100%;
+    font-size: 300%;
+    background-color: black;
+    color: white;
+}

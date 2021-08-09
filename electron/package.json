@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/benforster12310/dmxProject#readme",
   "devDependencies": {
-    "electron": "^13.1.8"
+    "electron": "^13.1.8",
+    "serialport": "^9.2.0"
   }
 }
