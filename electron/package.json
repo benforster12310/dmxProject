@@ -1,0 +1,22 @@
+{
+  "name": "dmx-controller",
+  "version": "0.1.0",
+  "description": "A Electron Project to interface with an arduino which can control DMX lights",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benforster12310/dmxProject.git"
+  },
+  "author": "Ben Forster",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benforster12310/dmxProject/issues"
+  },
+  "homepage": "https://github.com/benforster12310/dmxProject#readme",
+  "devDependencies": {
+    "electron": "^13.1.8"
+  }
+}
