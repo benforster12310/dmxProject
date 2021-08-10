@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog } = require('electron');
 var ipc = require("electron").ipcMain;
 
 const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
 
 // list the vendorId for arduino and then create a list of the productids with the descriptions on them
 let arduinoVendorId = 2341
@@ -21,6 +22,8 @@ let arduinoProductIds = {
 	"8036":  "Leonardo",
 	"8038":  "Robot Control Board"
 }
+
+var interfacePort = null;
 
 
 function createWindow(width, height, file, maximised) {
@@ -45,6 +48,7 @@ function createWindow(width, height, file, maximised) {
 }
 
 let IndexWindow = null;
+let ControllerWindow = null;
 
 // when ready create the main window
 app.whenReady().then(() => {
@@ -94,3 +98,30 @@ ipc.on("IsConnected", function(event, portToCheck) {
         
     });
 });
+
+ipc.on("UseDevice", function(event, devicePort) {
+    // then try and connect to the device by opening a SerialPort to the arduino and sending the alive word to the arduino
+    let port = new SerialPort(devicePort, {
+        baudRate: 9600
+    })
+    let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
+
+    parser.on("data", function(data) {
+        if(data == "ready") {
+            console.log("Recieved Ready Message");
+            // then send the alive word to the arduino
+            port.write("alive\n");
+        }
+        else if(data == "true") {
+            // then store the port in the interfacePort variable
+            interfacePort = devicePort;
+            // then open the controller window and close the index window
+            ControllerWindow = createWindow(800, 600, "pages/controller.html", true);
+            IndexWindow.close();
+        }
+        else {
+            // then send a message back and say it failed
+            event.sender.send("UseDeviceResponse", false);
+        }
+    })
+})

@@ -52,23 +52,36 @@ chooseDeviceBtn.addEventListener("click", chooseDevice);
 
 function chooseDevice() {
     // then get the currently selected device
-    let currentDeviceText = document.getElementById("dmxInterfaceSelect").innerHTML;
+    let currentDeviceText = document.getElementById("dmxInterfaceSelect").innerText;
     let currentDevicePort = document.getElementById("dmxInterfaceSelect").value;
 
-    // then send a request to the main process to make sure that the device is still available
-    ipc.on("IsConnectedResponse", function(event, data) {
-        if(data) {
-            // then the device is still connected so then proceed
-            useDevice()
-        }
-        else {
-            alert("The Device Is No Longer Connected, Please Refresh The List And Try Again");
-            getSerialDevices()
-        }
-    })
-    ipc.send("IsConnected", currentDevicePort)
+    if(currentDevicePort == "null") {
+        alert("No Devices Connected/Selected");
+    }
+    else {
+        // then send a request to the main process to make sure that the device is still available
+        ipc.on("IsConnectedResponse", function(event, data) {
+            if(data) {
+                // then the device is still connected so then ask them if they are sure that they want to connect to the device
+                if(confirm("Are You Sure That You Want To Connect To The Device '" + currentDeviceText + "' Connecting To This Device With The Wrong Firmware Loaded Onto It May Cause Unwanted Behaviour, Please Ensure You Want To Connect To This Device And Press OK, Else Please Press Cancel") == true) {
+                    useDevice(currentDevicePort);
+                }
+            }
+            else {
+                alert("The Device Is No Longer Connected, Please Refresh The List And Try Again");
+                getSerialDevices()
+            }
+        })
+        ipc.send("IsConnected", currentDevicePort);
+    }
 }
 
-function useDevice() {
-    alert("Using");
+function useDevice(port) {
+    ipc.once("UseDeviceResponse", function(event, data) {
+        if(data == false) {
+            // then tell them that the device isnt happy
+            alert("The Device You Tried To Connect To Has Incorrect Firmware, Please Select A Different Device And Try Again");
+        }
+    })
+    ipc.send("UseDevice", port);
 }
