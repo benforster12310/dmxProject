@@ -73,11 +73,16 @@ ipc.on("SerialPortsList", function(event, data) {
                 portsObject[Object.keys(portsObject).length] = {"port": data[i].path, "name": arduinoProductIds[data[i].productId]}
             }
         }
+        // THEN ADD A FAKE PORT
+        portsObject[Object.keys(portsObject).length] = {"port": "FAKE-PORT", "name": "Fake Interface"};
         event.sender.send("SerialPortsListResponse", JSON.stringify(portsObject))
     });
 });
 
 ipc.on("IsConnected", function(event, portToCheck) {
+    // RETURNING TRUE HERE
+    event.sender.send("IsConnectedResponse", true);
+    // NOT RETURNING TRUE HERE
     let portsObject = {};
     SerialPort.list().then(function(data) {
         // then go through each device
@@ -88,12 +93,16 @@ ipc.on("IsConnected", function(event, portToCheck) {
                 // then check if its path is the same as the portToCheck
                 if(data[i].path == portToCheck) {
                     found = true;
-                    event.sender.send("IsConnectedResponse", true);
+                    // USED TO RETURN TRUE HERE
+                    //event.sender.send("IsConnectedResponse", true);
+                    // DIDNT USED TO RETURN TRUE HERE
                 }
             }
         }
         if(found == false) {
-            event.sender.send("IsConnectedResponse", false)
+            // USED TO RETURN FALSE HERE
+            //event.sender.send("IsConnectedResponse", false);
+            // DIDNT USED TO RETURN FALSE HERE
         }
         
     });
@@ -106,7 +115,11 @@ ipc.on("UseDevice", function(event, devicePort) {
     })
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
 
-    parser.on("data", function(data) {
+    // USED TO BE AN START OF THE PARSER EVENT FOR DATA
+    //parser.on("data", function(data) {
+    // USED TO BE THE END OF THE PARSER EVENT FOR DATA
+    // THEN SET DATA TO TRUE
+    data = "true";
         if(data == "ready") {
             console.log("Recieved Ready Message");
             // then send the alive word to the arduino
@@ -123,5 +136,7 @@ ipc.on("UseDevice", function(event, devicePort) {
             // then send a message back and say it failed
             event.sender.send("UseDeviceResponse", false);
         }
-    })
+    // USED TO BE AN END OF THE PARSER EVENT FOR DATA
+    //})
+    // DIDNT USED TO BE THE END OF THE PARSER EVENT FOR DATA
 })
