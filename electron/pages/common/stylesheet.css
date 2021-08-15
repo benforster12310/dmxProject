@@ -16,6 +16,9 @@
 .halfWidth {
     width: 49.7%;
 }
+.thirdWidth {
+    width: 33.1%;
+}
 .quarterWidth {
     width: 24.7%;
 }
@@ -28,4 +31,10 @@
 }
 body {
     background-color: black;
+}
+.inlineDiv {
+    display: inline;
+}
+.blockDiv {
+    display: block;
 }

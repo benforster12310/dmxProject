@@ -139,4 +139,12 @@ ipc.on("UseDevice", function(event, devicePort) {
     // USED TO BE AN END OF THE PARSER EVENT FOR DATA
     //})
     // DIDNT USED TO BE THE END OF THE PARSER EVENT FOR DATA
-})
+});
+
+
+
+// THEN HANDLE THE IPC REQUESTS FROM THE CONTROLLER JS PAGE
+ipc.on("OpenManageFixturesWindow", function(event, data) {
+    // then create a new window
+    createWindow(800, 600, "pages/manageFixtures.html", true);
+});
