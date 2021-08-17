@@ -1,5 +1,7 @@
 const { app, BrowserWindow, dialog } = require('electron');
 var ipc = require("electron").ipcMain;
+var fs = require("fs");
+var path = require("path");
 
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
@@ -148,3 +150,28 @@ ipc.on("OpenManageFixturesWindow", function(event, data) {
     // then create a new window
     createWindow(800, 600, "pages/manageFixtures.html", true);
 });
+
+
+// THEN HANDLE THE IPC REQUESTS FROM THE manageFixtures JS PAGE
+ipc.on("SettingsGetFixtures", function(event, data) {
+    // then check if there is a folder in the documents called dmxProject
+    let folderPathToCheck = path.join(app.getPath("home"), "Documents", "dmxProject");
+    if(fs.existsSync(folderPathToCheck)) {
+        // then as the folder is there then check if there is a fixtures.json file in there
+        if(fs.existsSync(folderPathToCheck + "\\fixtures.json")) {
+            // then read the contents of the file
+            let fixturesJson = fs.readFileSync(folderPathToCheck + "\\fixtures.json", "utf8");
+            event.sender.send("SettingsGetFixturesResponse", fixturesJson);
+        }
+        else {
+            // then make a new file
+            fs.appendFileSync(folderPathToCheck + "\\fixtures.json", '{\n\t"success":true\n}');
+            event.sender.send("SettingsGetFixturesResponse", JSON.stringify({"success":false}))
+        }
+    }
+    else {
+        // then create a folder
+        fs.mkdirSync(folderPathToCheck);
+        event.sender.send("SettingsGetFixturesResponse", JSON.stringify({"success":false}))
+    }
+})
