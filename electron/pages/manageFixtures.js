@@ -57,10 +57,29 @@ function listFixtures(dataObject) {
 }
 
 // EDIT FIXTURE SECTION
+let colorsObject = {};
 
 // edit fixture function
 function editFixture(fixtureId) {
     let fixture = fixturesObject[fixtureId];
     // then fill the fields in
+    document.getElementById("editFixtureDiv_fixtureName").value = fixture.name;
+    document.getElementById("editFixtureDiv_startAddress").value = fixture.startAddress;
+    document.getElementById("editFixtureDiv_endAddress").value = fixture.endAddress;
+    document.getElementById("editFixtureDiv_onChannel").value = fixture.onChannel;
+    document.getElementById("editFixtureDiv_onChannelValue").value = fixture.onChannelValue;
+    colorsObject = fixture.colors;
+    editFixtureDiv_updateColors();
+}
+
+function editFixtureDiv_addColor() {
     
+}
+
+function editFixtureDiv_removeColor() {
+
+}
+
+function editFixtureDiv_updateColors() {
+
 }
