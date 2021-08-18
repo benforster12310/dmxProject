@@ -51,10 +51,16 @@ function listFixtures(dataObject) {
             button.appendChild(buttonTextNode);
             button.setAttribute("class", "btn button fullWidth");
             document.getElementById("fixturesDiv").appendChild(button);
-            button.setAttribute("onclick", "viewFixture(" + i + ")");
+            button.setAttribute("onclick", "editFixture(" + i + ")");
         }
     }
 }
-function viewFixture(fixtureId) {
-    alert("" + fixtureId);
+
+// EDIT FIXTURE SECTION
+
+// edit fixture function
+function editFixture(fixtureId) {
+    let fixture = fixturesObject[fixtureId];
+    // then fill the fields in
+    
 }

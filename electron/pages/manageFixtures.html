@@ -4,6 +4,11 @@
         <link rel="stylesheet" href="common/stylesheet.css">
         <script src="manageFixtures.js" defer></script>
         <title>Manage Fixtures</title>
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
     </head>
     <body>
         <h1 class="title">Fixtures Manager</h1>
@@ -14,6 +19,34 @@
         <br/>
         <h1 class="title">Fixtures:</h1>
         <div class="blockDiv" id="fixturesDiv">
+            <br/>
+        </div>
+        <div class="blockDiv hidden" id="editFixtureDiv">
+            <br/>
+            <input type="text" class="btn button fullWidth" id="editFixtureDiv_fixtureName" placeholder="Fixture Name">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="editFixtureDiv_startAddress" placeholder="DMX Start Address">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="editFixtureDiv_endAddress" placeholder="DMX End Address">
+            <br/>
+            <br/>
+            <div class="blockDiv" id="colorsDiv">
+                <button class="btn button fullWidth" id="editFixtureDiv_addColor">Add Color</button>
+                <br/>
+                <br/>
+            </div>
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="editFixtureDiv_onChannel" placeholder="On Channel DMX Address">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="editFixtureDiv_onChannelValue" placeholder="On Channel Value To Send">
+            <br/>
+            <br/>
+            <button class="btn button fullWidth" id="editFixtureDiv_update()">Update Fixture</button>
+            <br/>
             <br/>
         </div>
     </body>
