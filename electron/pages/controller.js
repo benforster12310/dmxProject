@@ -58,8 +58,13 @@ switchToSettingsBtn.addEventListener("click", function() {
 // CONTROL SECTION CODE
 ////////////////////////////////////
 // then load the fixtures
+let fixturesObject = {}
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
-
+    let dataObject = JSON.parse(data);
+    if(dataObject.success == false) {
+        console.log("Error SettingsGetFixturesResponse - no file or folder, retrying");
+        ipc.send("SettingsGetFixtures", "");
+    }
 })
 ipc.send("SettingsGetFixtures", "");
 
