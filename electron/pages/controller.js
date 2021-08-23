@@ -57,6 +57,11 @@ switchToSettingsBtn.addEventListener("click", function() {
 
 // CONTROL SECTION CODE
 ////////////////////////////////////
+// then load the fixtures
+ipc.on("SettingsGetFixturesResponse", function(event, data) {
+
+})
+ipc.send("SettingsGetFixtures", "");
 
 
 // PROGRAMS SECTION CODE

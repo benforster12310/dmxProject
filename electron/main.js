@@ -169,7 +169,7 @@ ipc.on("SettingsGetFixtures", function(event, data) {
         }
         else {
             // then make a new file
-            fs.appendFileSync(folderPathToCheck + "\\fixtures.json", '{\n\t"success":true\n}');
+            fs.appendFileSync(folderPathToCheck + "\\fixtures.json", '{\n\t"success":true,\n\t"fixtures": {\n\n\t}\n}');
             event.sender.send("SettingsGetFixturesResponse", JSON.stringify({"success":false}))
         }
     }
@@ -178,4 +178,12 @@ ipc.on("SettingsGetFixtures", function(event, data) {
         fs.mkdirSync(folderPathToCheck);
         event.sender.send("SettingsGetFixturesResponse", JSON.stringify({"success":false}))
     }
+})
+
+ipc.on("SettingsSaveFixtures", function(event, data) {
+    // then save the fixtures to the json file
+    let folderPath = path.join(app.getPath("home"), "Documents", "dmxProject");
+    filePath = folderPath + "\\fixtures.json";
+    fs.writeFileSync(filePath, '{\n\t"success":true,\n\t"fixtures":' + data + '\n}');
+    event.sender.send("SettingsSaveFixturesResponse", true);
 })

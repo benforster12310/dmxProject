@@ -38,3 +38,9 @@ body {
 .blockDiv {
     display: block;
 }
+.label {
+    font-size: 130%;
+    text-align: center;
+    width: 100%;
+    color: white;
+}
