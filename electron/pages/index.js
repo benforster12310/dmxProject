@@ -63,9 +63,10 @@ function chooseDevice() {
         ipc.on("IsConnectedResponse", function(event, data) {
             if(data) {
                 // then the device is still connected so then ask them if they are sure that they want to connect to the device
-                if(confirm("Are You Sure That You Want To Connect To The Device '" + currentDeviceText + "' Connecting To This Device With The Wrong Firmware Loaded Onto It May Cause Unwanted Behaviour, Please Ensure You Want To Connect To This Device And Press OK, Else Please Press Cancel") == true) {
+                useDevice(currentDevicePort);
+                /*if(confirm("Are You Sure That You Want To Connect To The Device '" + currentDeviceText + "' Connecting To This Device With The Wrong Firmware Loaded Onto It May Cause Unwanted Behaviour, Please Ensure You Want To Connect To This Device And Press OK, Else Please Press Cancel") == true) {
                     useDevice(currentDevicePort);
-                }
+                }*/
             }
             else {
                 alert("The Device Is No Longer Connected, Please Refresh The List And Try Again");

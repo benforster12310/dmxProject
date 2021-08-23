@@ -67,7 +67,6 @@ switchToSettingsBtn.addEventListener("click", function() {
 ////////////////////////////////////
 let settingsDiv_manageFixturesBtn = document.getElementById("settingsDiv_manageFixturesBtn");
 settingsDiv_manageFixturesBtn.addEventListener("click", function() {
-    alert("hi");
     // then call the ipc to open another window
     ipc.send("OpenManageFixturesWindow", "");
 })

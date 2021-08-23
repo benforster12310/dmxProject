@@ -28,10 +28,11 @@ let arduinoProductIds = {
 var interfacePort = null;
 
 
-function createWindow(width, height, file, maximised) {
+function createWindow(width, height, file, maximised, show) {
     const win = new BrowserWindow({
       width: width,
       height: height,
+      show: show,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
@@ -54,7 +55,7 @@ let ControllerWindow = null;
 
 // when ready create the main window
 app.whenReady().then(() => {
-    IndexWindow = createWindow(800, 600, "pages/index.html", true)
+    IndexWindow = createWindow(800, 600, "pages/index.html", true, true);
 })
 
 app.on('window-all-closed', function () {
@@ -131,7 +132,10 @@ ipc.on("UseDevice", function(event, devicePort) {
             // then store the port in the interfacePort variable
             interfacePort = devicePort;
             // then open the controller window and close the index window
-            ControllerWindow = createWindow(800, 600, "pages/controller.html", true);
+            ControllerWindow = createWindow(800, 600, "pages/controller.html", true, false);
+            ControllerWindow.once('ready-to-show', () => {
+                ControllerWindow.show();
+            })
             IndexWindow.close();
         }
         else {
