@@ -14,11 +14,11 @@
         <h1 class="title">Fixtures Manager</h1>
         <br/>
         <br/>
-        <button class="btn button fullWidth" id="createNewFixtureBtn">Create New Fixture</button>
-        <br/>
-        <br/>
-        <h1 class="title">Fixtures:</h1>
         <div class="blockDiv" id="fixturesDiv">
+            <button class="btn button fullWidth" id="createNewFixtureBtn">Create New Fixture</button>
+            <br/>
+            <br/>
+            <h1 class="title">Fixtures:</h1>
             <br/>
         </div>
         <div class="blockDiv hidden" id="editFixtureDiv">
@@ -32,8 +32,8 @@
             <input type="number" class="btn button fullWidth" id="editFixtureDiv_endAddress" placeholder="DMX End Address">
             <br/>
             <br/>
-            <div class="blockDiv" id="colorsDiv">
-                <button class="btn button fullWidth" id="editFixtureDiv_addColor">Add Color</button>
+            <div class="blockDiv" id="editFixtureDiv_colorsDiv">
+                <button class="btn button fullWidth" onclick="editFixtureDiv_addColor()">Add Color</button>
                 <br/>
                 <br/>
             </div>
@@ -45,9 +45,34 @@
             <input type="number" class="btn button fullWidth" id="editFixtureDiv_onChannelValue" placeholder="On Channel Value To Send">
             <br/>
             <br/>
-            <button class="btn button fullWidth" id="editFixtureDiv_update()">Update Fixture</button>
+            <button class="btn button fullWidth" id="editFixtureDiv_updateBtn">Update Fixture</button>
             <br/>
             <br/>
+        </div>
+        <div class="blockDiv hidden" id="addColorDiv">
+            <h1 class="title">Add Color:</h1>
+            <br/>
+            <br/>
+            <input type="text" class="btn button fullWidth" id="addColorDiv_colorName" placeholder="Color Name">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="addColorDiv_colorOffValue" placeholder="DMX Value To Turn Color Off">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="addColorDiv_colorMinValue" placeholder="DMX Value For The Color At Minimum">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="addColorDiv_colorMaxValue" placeholder="DMX Value For The Color At Maximum">
+            <br/>
+            <br/>
+            <input type="number" class="btn button fullWidth" id="addColorDiv_colorDmxChannel" placeholder="DMX Channel In Reference To The Light For The Color">
+            <br/>
+            <br/>
+            Is The Color Dimmable By The On Channel, If It Is Tick Here, If Not Then The Fixture Is Dimmable By The Channel Specifified Above
+            <input type="checkbox" style="width:25px; height:25px;" id="addColorDiv_dimmableViaOnChannel">
+            <br/>
+            <br/>
+            <button class="btn button fullWidth" onclick="addColorDiv_addColor()">Add Color</button>
         </div>
     </body>
 </html>
