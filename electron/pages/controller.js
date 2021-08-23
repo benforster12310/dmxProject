@@ -65,6 +65,18 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         console.log("Error SettingsGetFixturesResponse - no file or folder, retrying");
         ipc.send("SettingsGetFixtures", "");
     }
+    else {
+        fixturesObject = dataObject.fixtures;
+        // then make buttons for each fixture
+        for(var i = 0; i < Object.keys(fixturesObject).length; i++) {
+            let button = document.createElement("button");
+            button.setAttribute("onclick", "controlDiv_useFixture(" + i + ")");
+            let textNode = document.createTextNode(fixturesObject[i].name);
+            button.appendChild(textNode);
+            button.setAttribute("class", "btn button");
+            document.getElementById("controlDiv_fixtureSelectorDiv").appendChild(button);
+        }
+    }
 })
 ipc.send("SettingsGetFixtures", "");
 
