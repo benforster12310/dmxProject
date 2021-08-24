@@ -31,10 +31,10 @@ void loop() {
 
       // then write the channel
       DmxSimple.write(doc["channel"], doc["value"]);
-      Serial.print("WRITTEN ");
-      Serial.print(doc["value"]);
-      Serial.print(" TO ");
-      Serial.println(doc["channel"]);
+      //Serial.print("WRITTEN ");
+      //Serial.print(doc["value"]);
+      //Serial.print(" TO ");
+      //Serial.println(doc["channel"]);
     }
   }
 }
