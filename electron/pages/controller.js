@@ -58,7 +58,9 @@ switchToSettingsBtn.addEventListener("click", function() {
 // CONTROL SECTION CODE
 ////////////////////////////////////
 // then load the fixtures
-let fixturesObject = {}
+let fixturesArray = [];
+var uncontroledFixturesArray = [];
+var controlFixturesArray = [];
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
     let dataObject = JSON.parse(data);
     if(dataObject.success == false) {
@@ -66,12 +68,12 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         ipc.send("SettingsGetFixtures", "");
     }
     else {
-        fixturesObject = dataObject.fixtures;
+        fixturesArray = dataObject.fixtures;
         // then make buttons for each fixture
-        for(var i = 0; i < Object.keys(fixturesObject).length; i++) {
+        for(var i = 0; i < fixturesArray.length; i++) {
             let button = document.createElement("button");
             button.setAttribute("onclick", "controlDiv_useFixture(" + i + ")");
-            let textNode = document.createTextNode(fixturesObject[i].name);
+            let textNode = document.createTextNode(fixturesArray[i].name);
             button.appendChild(textNode);
             button.setAttribute("class", "btn button");
             document.getElementById("controlDiv_fixtureSelectorDiv").appendChild(button);
@@ -79,6 +81,12 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
     }
 })
 ipc.send("SettingsGetFixtures", "");
+
+
+// controlDiv_useFixture
+function controlDiv_useFixture(fixtureId) {
+
+}
 
 
 // PROGRAMS SECTION CODE

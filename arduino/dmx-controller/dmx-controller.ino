@@ -4,6 +4,7 @@
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial.setTimeout(100000);
   Serial.println("ready");
   DmxSimple.usePin(3);
   DmxSimple.maxChannel(70);
@@ -12,17 +13,9 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   while(Serial.available() > 0) {
-    String serialLine = Serial.readString();
-    if(!serialLine.startsWith("{")) {
-      // then check if its a config message
-      if(serialLine == "alive\n") {
-        Serial.println("true");
-      }
-    }
-    else {
       // then define the jsonDocument
       StaticJsonDocument<48> doc;
-      DeserializationError error = deserializeJson(doc, serialLine);
+      DeserializationError error = deserializeJson(doc, Serial);
       if(error) {
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.f_str());
@@ -30,11 +23,6 @@ void loop() {
       }
 
       // then write the channel
-      DmxSimple.write(doc["channel"], doc["value"]);
-      //Serial.print("WRITTEN ");
-      //Serial.print(doc["value"]);
-      //Serial.print(" TO ");
-      //Serial.println(doc["channel"]);
+      DmxSimple.write(doc["channel"].as<int>(), doc["value"].as<int>());
     }
-  }
 }

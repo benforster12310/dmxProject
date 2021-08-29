@@ -169,7 +169,7 @@ ipc.on("SettingsGetFixtures", function(event, data) {
         }
         else {
             // then make a new file
-            fs.appendFileSync(folderPathToCheck + "\\fixtures.json", '{\n\t"success":true,\n\t"fixtures": {\n\n\t}\n}');
+            fs.appendFileSync(folderPathToCheck + "\\fixtures.json", '{\n\t"success":true,\n\t"fixtures": [\n\n\t]\n}');
             event.sender.send("SettingsGetFixturesResponse", JSON.stringify({"success":false}))
         }
     }

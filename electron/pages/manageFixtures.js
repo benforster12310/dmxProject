@@ -43,8 +43,8 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
 });
 ipc.send("SettingsGetFixtures", "");
 
-var fixturesObject = null;
-var fixturesObjectLength
+var fixturesArray = null;
+var fixturesArrayLength
 
 let isEditingFixture = false;
 
@@ -56,13 +56,13 @@ function listFixtures(dataObject) {
     // then check if the fixtures key exists
     if(dataObject.hasOwnProperty("fixtures")) {
         // then count the number of fixtures in here
-        fixturesObject = dataObject.fixtures
-        fixturesObjectLength = Object.keys(fixturesObject).length;
+        fixturesArray = dataObject.fixtures
+        fixturesArrayLength = fixturesArray.length;
         // then go through the fixtures and then create a button for each fixture
-        for(var i = 0; i < fixturesObjectLength; i++) {
+        for(var i = 0; i < fixturesArrayLength; i++) {
             let button = document.createElement("button");
             button.setAttribute("id", i);
-            let buttonTextNode = document.createTextNode(fixturesObject[i].name);
+            let buttonTextNode = document.createTextNode(fixturesArray[i].name);
             button.appendChild(buttonTextNode);
             button.setAttribute("class", "btn button fullWidth");
             document.getElementById("fixturesDiv").appendChild(button);
@@ -87,7 +87,7 @@ function createFixtureDiv_create() {
     fixture.colors = colorsObject;
     fixture.onChannel = parseInt(document.getElementById("createFixtureDiv_onChannel").value);
     fixture.onChannelValue = parseInt(document.getElementById("createFixtureDiv_onChannelValue").value);
-    fixturesObject[Object.keys(fixturesObject).length] = fixture;
+    fixturesArray[fixturesArray.length] = fixture;
     // then send it back to the ipc to write to the fixtures file
     ipc.on("SettingsSaveFixturesResponse", function(event, data) {
         if(data == true) {
@@ -100,7 +100,7 @@ function createFixtureDiv_create() {
             alert("Error Saving, Please Try Again")
         }
     });
-    ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesObject));
+    ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesArray));
 }
 
 function createFixtureDiv_updateColors() {
@@ -131,13 +131,13 @@ function createFixtureDiv_removeColor(cid) {
     }
 }
 
-// EDIT FIXTURE SECTIOn
+// EDIT FIXTURE SECTION
 
 // edit fixture function
 function editFixture(fixtureIdFromBtn) {
     fixtureId = fixtureIdFromBtn;
     isEditingFixture = true;
-    let fixture = fixturesObject[fixtureId];
+    let fixture = fixturesArray[fixtureId];
     // then fill the fields in
     document.getElementById("editFixtureDiv_fixtureName").value = fixture.name;
     document.getElementById("editFixtureDiv_startAddress").value = fixture.startAddress;
@@ -187,7 +187,7 @@ function editFixtureDiv_update() {
     fixture.colors = colorsObject;
     fixture.onChannel = parseInt(document.getElementById("editFixtureDiv_onChannel").value);
     fixture.onChannelValue = parseInt(document.getElementById("editFixtureDiv_onChannelValue").value);
-    fixturesObject[fixtureId] = fixture;
+    fixturesArray[fixtureId] = fixture;
     // then send it back to the ipc to write to the fixtures file
     ipc.on("SettingsSaveFixturesResponse", function(event, data) {
         if(data == true) {
@@ -199,13 +199,13 @@ function editFixtureDiv_update() {
             alert("Error Saving, Please Try Again")
         }
     });
-    ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesObject));
+    ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesArray));
 }
 
 function editFixtureDiv_delete() {
     if(confirm("You Are About To Delete This Fixture, Are You Sure That You Want To Proceed As This Cannot Be Undone") == true) {
-        // then delete the fixture from the fixturesObject and then write the fixturesObject to the json file
-        delete fixturesObject[fixtureId];
+        // then delete the fixture from the fixturesArray and then write the fixturesArray to the json file
+        let del = fixturesArray.splice(fixtureId, 1);
         ipc.on("SettingsSaveFixturesResponse", function(event, data) {
             if(data == true) {
                 alert("Saved");
@@ -217,7 +217,7 @@ function editFixtureDiv_delete() {
                 alert("Error Saving, Please Try Again")
             }
         });
-        ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesObject));
+        ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesArray));
     }
 }
 
