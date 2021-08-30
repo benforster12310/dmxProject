@@ -76,21 +76,51 @@ ipc.on("SerialPortsList", function(event, data) {
                 portsObject[Object.keys(portsObject).length] = {"port": data[i].path, "name": arduinoProductIds[data[i].productId]}
             }
         }
+        // THEN ADD A FAKE PORT
+        portsObject[Object.keys(portsObject).length] = {"port": "FAKE-PORT", "name": "Fake Interface"};
         event.sender.send("SerialPortsListResponse", JSON.stringify(portsObject))
     });
 });
 
-let arduinoSerialPort = null;
+ipc.on("IsConnected", function(event, portToCheck) {
+    // RETURNING TRUE HERE
+    event.sender.send("IsConnectedResponse", true);
+    // NOT RETURNING TRUE HERE
+    let portsObject = {};
+    SerialPort.list().then(function(data) {
+        // then go through each device
+        let found = false;
+        for(var i = 0; i < data.length; i++) {
+            // then check if the device is made by arduino
+            if(data[i].vendorId == arduinoVendorId) {
+                // then check if its path is the same as the portToCheck
+                if(data[i].path == portToCheck) {
+                    found = true;
+                    // USED TO RETURN TRUE HERE
+                    //event.sender.send("IsConnectedResponse", true);
+                    // DIDNT USED TO RETURN TRUE HERE
+                }
+            }
+        }
+        if(found == false) {
+            // USED TO RETURN FALSE HERE
+            //event.sender.send("IsConnectedResponse", false);
+            // DIDNT USED TO RETURN FALSE HERE
+        }
+        
+    });
+});
 
 ipc.on("UseDevice", function(event, devicePort) {
     // then try and connect to the device by opening a SerialPort to the arduino and sending the alive word to the arduino
     let port = new SerialPort(devicePort, {
         baudRate: 9600
     })
-    arduinoSerialPort = port;
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
 
-    parser.on("data", function(data) {
+    // USED TO BE AN START OF THE PARSER EVENT FOR DATA
+    //parser.on("data", function(data) {
+    // USED TO BE THE END OF THE PARSER EVENT FOR DATA
         interfacePort = devicePort;
         // then open the controller window and close the index window
         ControllerWindow = createWindow(800, 600, "pages/controller.html", true, false);
@@ -98,7 +128,9 @@ ipc.on("UseDevice", function(event, devicePort) {
             ControllerWindow.show();
         })
         IndexWindow.close();
-    })
+    // USED TO BE AN END OF THE PARSER EVENT FOR DATA
+    //})
+    // DIDNT USED TO BE THE END OF THE PARSER EVENT FOR DATA
 });
 
 
@@ -145,6 +177,5 @@ ipc.on("SettingsSaveFixtures", function(event, data) {
 
 // THE DMX PART
 ipc.on("WriteToDmxChannel", function(event, data) {
-    arduinoSerialPort.write(data);
     console.log(data);
 })

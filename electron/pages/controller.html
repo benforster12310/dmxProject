@@ -18,11 +18,16 @@
             }
             .faderDiv {
                 display: inline-block;
+                width: 24.8%;
             }
             .smallTitle {
                 color: white;
                 font-size: 200%;
                 text-align: center;
+            }
+            .fixtureSelected {
+                background-color: yellow;
+                color: black;
             }
         </style>
     </head>
@@ -37,22 +42,7 @@
             <h1 class="smallTitle">Fixtures:</h1>
             <div class="inlineDiv" style="overflow: auto; display: flex; white-space: nowrap;" id="controlDiv_fixtureSelectorDiv"></div>
             <br/>
-            <h1 class="smallTitle">Fixtures Being Controlled:</h1>
-            <div class="inlineDiv" style="overflow: auto; display: flex; white-space: nowrap;" id="controlDiv_fixturesControllingDiv"></div>
-            <br/>
-            <br/>
-            <div class="inlineDiv" style="overflow: auto; display: flex; white-space: nowrap;" id="controlDiv_fadersDiv">
-                <div class="faderDiv">
-                    <button class="btn button fullWidth">Button 1</button>
-                    <br/>
-                    <button class="btn button fullWidth">Button 2</button>
-                </div>
-                <div class="faderDiv">
-                    <button class="btn button fullWidth">Button 1</button>
-                    <br/>
-                    <button class="btn button fullWidth">Button 2</button>
-                </div>
-            </div>
+            <div class="inlineDiv" style="overflow: auto; display: flex; white-space: nowrap; height: 50%" id="controlDiv_fadersDiv"></div>
         </div>
         <div class="blockDiv hidden" id="programmingDiv">
             
