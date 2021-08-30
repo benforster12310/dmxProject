@@ -59,8 +59,8 @@ switchToSettingsBtn.addEventListener("click", function() {
 ////////////////////////////////////
 // then load the fixtures
 let fixturesArray = [];
-var uncontroledFixturesArray = [];
-var controlFixturesArray = [];
+var uncontrolledFixturesArray = [];
+var controlledFixturesArray = [];
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
     let dataObject = JSON.parse(data);
     if(dataObject.success == false) {
@@ -85,7 +85,7 @@ ipc.send("SettingsGetFixtures", "");
 
 // controlDiv_useFixture
 function controlDiv_useFixture(fixtureId) {
-
+    
 }
 
 
