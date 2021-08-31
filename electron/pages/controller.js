@@ -141,12 +141,17 @@ function fixtureValueIndicatorChanged(event, element) {
         let colorName = Object.keys(fixturesArray[fixtureBeingControlled].colors)[parseInt(element.id.split("valueIndicatorForColor_")[1])];
         console.log(colorName);
         // then get the channel id
+        let startingChannel = fixturesArray[fixtureBeingControlled].startAddress;
         let channelId = fixturesArray[fixtureBeingControlled].colors[colorName].channel;
+        let onChannel = fixturesArray[fixtureBeingControlled].onChannel;
+        let onChannelValue = fixturesArray[fixtureBeingControlled].onChannelValue;
+        dmxOut((onChannel + startingChannel)-1, onChannelValue);
         // then send the value to the arduino via the ipc
-        dmxOut(channelId, element.value);
+        dmxOut((channelId + startingChannel)-1, element.value);
     }
 }
 function dmxOut(channel, value) {
+
     let data = JSON.stringify({channel: channel, value: value});
     ipc.send("WriteToDmxChannel", data);
 }
