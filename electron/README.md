@@ -86,7 +86,7 @@ a fixtures object will be created, the id of the fixture will be represented by 
 
         `{
         "name": "Red",
-        "type": "Dimmer",
+        "type": "Dimmer"
         }`
 
         e.g.
@@ -99,6 +99,77 @@ a fixtures object will be created, the id of the fixture will be represented by 
             "circle":20  
         }}`
 
+
+## There is also a property called fixturesGroup
+
+fixturesGroup contains nested arrays that use the key as the id for the group and then contains the id's of the fixtures in it e.g.
+
+`{"fixturesGroup": {
+    "group1Id": ["fixture1Id", "fixture2Id"]
+}}`
+
+**IMPORTANT:** The fixtures must have exactly the same control structure and be identical with the only difference being the DMX channel that they are set to. **Creating a group with different types of fixtures in it may cause unexpected results**
+
+Any invalid id will be ignored and the group should continue to work normally but the error will be reported to the user
+
+
+---
+
+> PROGRAMS
+
+**Programs** can be added by dragging and dropping a json file into the **programs** folder inside the **dmxProject** folder
+
+**ONE** JSON file will contain one program/chase with an array with the key "scenes", this is an array and inside it will be another array which will contain one object per fixture to control
+
+``{
+    "success":true,
+    "name":"TestLights",
+    "loopOnFinish": true,
+    "scenes": [
+        [
+            {
+                "fixtureId":"fixture1",
+                "isFixtureGroup":false,
+                "channels": {
+                    "1": 255,
+                    "2": 255,
+                    "3": 0,
+                    "4": 0
+                }
+            }
+        ],
+        [
+            {
+                "fixtureId":"fixture1",
+                "isFixtureGroup":false,
+                "channels": {
+                    "1": 255,
+                    "2": 0,
+                    "3": 0,
+                    "4": 255
+                } 
+            }
+        ]
+    ]
+}``
+
+The Properties:
+
+- **name** - the name of the chase/scene collection
+
+- **loopOnFinish** - this boolean tells the program to loop the scenes once the end is reached, this makes it behave like a chase
+
+- **syncToTime** - this boolean tells the program to use times provided in the next property to sync the scenes to timings provided by the program
+
+- **timings** - this object contains a key as the time and the property as the scene number, starting at 1 for scene 1
+
+- **scenes** - this array contains a nested array which then contains one object per fixture to control which has the following properties
+
+    - **fixtureId** - this is the id of the fixture or group that you are controlling
+
+    - **isFixtureGroup** - this boolean says whether the fixtureId is a group or a single fixture
+
+    - **channels** - this contains key,value pairs of values related to that fixture/group and says what channel and value to set
 
 ---
 > main.js

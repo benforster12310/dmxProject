@@ -85,7 +85,7 @@ let arduinoSerialPort = null;
 ipc.on("UseDevice", function(event, devicePort) {
     // then try and connect to the device by opening a SerialPort to the arduino and sending the alive word to the arduino
     let port = new SerialPort(devicePort, {
-        baudRate: 9600
+        baudRate: 19200
     })
     arduinoSerialPort = port;
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
@@ -146,5 +146,5 @@ ipc.on("SettingsSaveFixtures", function(event, data) {
 // THE DMX PART
 ipc.on("WriteToDmxChannel", function(event, data) {
     arduinoSerialPort.write(data);
-    console.log(data);
+    //console.log(data);
 })

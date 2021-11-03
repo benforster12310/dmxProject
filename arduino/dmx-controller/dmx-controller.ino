@@ -3,7 +3,7 @@
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(19200);
   Serial.setTimeout(100000);
   Serial.println("ready");
   DmxSimple.usePin(3);

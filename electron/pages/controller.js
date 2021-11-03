@@ -20,6 +20,8 @@ confirm = function(txt) {
 var currentPageBtnId = "switchToControlBtn";
 var currentOpenDiv = "controlDiv";
 
+
+
 function update() {
     document.getElementById("switchToControlBtn").classList.remove("navBarSelected");
     document.getElementById("switchToProgrammingBtn").classList.remove("navBarSelected");
@@ -86,7 +88,9 @@ ipc.send("SettingsGetFixtures", "");
 // controlDiv_useFixture
 function controlDiv_useFixture(fixtureBtn) {
     fixtureBeingControlled = fixtureBtn.id;
+    document.getElementById("controlDiv_fadersDiv").innerHTML = "";
     controlDiv_loadFixture(fixtureBeingControlled);
+    
 }
 
 function controlDiv_loadFixture(fixtureId) {
@@ -115,14 +119,33 @@ function controlDiv_loadFixture(fixtureId) {
         valueIndicator.setAttribute("id", "valueIndicatorForColor_" + i);
         valueIndicator.setAttribute("onkeyup", "fixtureValueIndicatorChanged(event, this)");
         faderDiv.appendChild(valueIndicator);
+        let brTag2 = document.createElement("br");
+        faderDiv.appendChild(brTag2)
+        let values = ["100%", "75%", "50%", "25%", "0%"];
+        let valuesAsNumber = [255, 191, 127, 64, 0]
+        // then create 5 buttons
+        for(var x = 0; x < 5; x++) {
+            let btn = document.createElement("button")
+            let btnTxtNode = document.createTextNode(values[x]);
+            btn.appendChild(btnTxtNode);
+            btn.setAttribute("class", "btn button fullWidth");
+            btn.setAttribute("onclick", "buttonClicked(" + i + ", '" + valuesAsNumber[x] + "')");
+            faderDiv.appendChild(btn)
+            let brTag3 = document.createElement("br");
+            faderDiv.appendChild(brTag3)
+        }
         // then append the faderDiv to the controlDiv_fadersDiv
         document.getElementById("controlDiv_fadersDiv").appendChild(faderDiv);
     }
+}
+function buttonClicked(i, value) {
+    console.log(value); document.getElementById('valueIndicatorForColor_' + i).value = value; fixtureValueIndicatorChanged({'keyCode':13}, document.getElementById('valueIndicatorForColor_' + i))
 }
 
 
 // PROGRAMS SECTION CODE
 ////////////////////////////////////
+
 
 
 // SETTINGS SECTION CODE
