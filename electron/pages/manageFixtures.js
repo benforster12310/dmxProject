@@ -17,14 +17,14 @@ confirm = function(txt) {
     }
 }
 
-// then define the Color class
-class Color {
-    constructor(offValue, minValue, maxValue, colorChannel, dimmableViaOnChannel) {
-        this.off = offValue;
-        this.min = minValue;
-        this.max = maxValue;
-        this.channel = colorChannel;
-        this.dimmableViaOnChannel = dimmableViaOnChannel;
+// then define the ChannelFeature class
+class ChannelFeature {
+    constructor(channel, name, featureType, userOptions, userOptionsValues) {
+        this.featureType = featureType;
+        this.userOptions = userOptions;
+        this.userOptionsValues = userOptionsValues;
+        this.channel = channel;
+        this.name = name;
     }
 }
 
@@ -48,7 +48,7 @@ var fixturesArrayLength
 
 let isEditingFixture = false;
 
-let colorsObject = {};
+let channelFeaturesObject = {};
 let fixtureId = 0;
 
 function listFixtures(dataObject) {
@@ -84,9 +84,7 @@ function createFixtureDiv_create() {
     fixture.name = document.getElementById("createFixtureDiv_fixtureName").value
     fixture.startAddress = parseInt(document.getElementById("createFixtureDiv_startAddress").value);
     fixture.endAddress = parseInt(document.getElementById("createFixtureDiv_endAddress").value);
-    fixture.colors = colorsObject;
-    fixture.onChannel = parseInt(document.getElementById("createFixtureDiv_onChannel").value);
-    fixture.onChannelValue = parseInt(document.getElementById("createFixtureDiv_onChannelValue").value);
+    fixture.channelFeatures = channelFeaturesObject;
     fixturesArray[fixturesArray.length] = fixture;
     // then send it back to the ipc to write to the fixtures file
     ipc.on("SettingsSaveFixturesResponse", function(event, data) {
@@ -103,31 +101,31 @@ function createFixtureDiv_create() {
     ipc.send("SettingsSaveFixtures", JSON.stringify(fixturesArray));
 }
 
-function createFixtureDiv_updateColors() {
-    // then display the colors as a button
-    document.getElementById("createFixtureDiv_colorsDiv").innerHTML = '<button class="btn button fullWidth" onclick="createFixtureDiv_addColor()">Add Color</button><br/><br/>';
-    for(var i = 0; i < Object.keys(colorsObject).length; i++) {
+function createFixtureDiv_updateChannelFeatures() {
+    // then display the channelFeatures as a button for each one
+    document.getElementById("createFixtureDiv_colorsDiv").innerHTML = '<button class="btn button fullWidth" onclick="createFixtureDiv_addChannelFeature()">Add Channel Feature</button><br/><br/>';
+    for(var i = 0; i < Object.keys(channelFeaturesObject).length; i++) {
         let button = document.createElement("button");
         button.setAttribute("class", "btn button fullWidth");
-        let buttonTextNode = document.createTextNode(Object.keys(colorsObject)[i]);
+        let buttonTextNode = document.createTextNode(Object.keys(channelFeaturesObject)[i]);
         button.appendChild(buttonTextNode);
-        button.setAttribute("onclick", "createFixtureDiv_removeColor(" + i + ")");
-        document.getElementById("createFixtureDiv_colorsDiv").appendChild(button);
+        button.setAttribute("onclick", "createFixtureDiv_removeChannelFeature(" + i + ")");
+        document.getElementById("createFixtureDiv_channelFeaturesDiv").appendChild(button);
     }
 }
 
-function createFixtureDiv_addColor() {
-    // then hide the editFixtureDiv and open the addColorDiv
+function createFixtureDiv_addChannelFeature() {
+    // then hide the editFixtureDiv and open the addChannelFeatureDiv
     document.getElementById("createFixtureDiv").classList.add("hidden");
-    document.getElementById("addColorDiv").classList.remove("hidden");
+    document.getElementById("addChannelFeatureDiv").classList.remove("hidden");
 }
 
-function createFixtureDiv_removeColor(cid) {
-    if(confirm("Are You Sure That You Want To Remove The Color '" + Object.keys(colorsObject)[cid] + "' From The Fixture") == true) {
-        // then delete the color
-        delete colorsObject[Object.keys(colorsObject)[cid]];
-        // then update the color
-        createFixtureDiv_updateColors();
+function createFixtureDiv_removeChannelFeature(featureId) {
+    if(confirm("Are You Sure That You Want To Remove The Channel Feature '" + Object.keys(channelFeaturesObject)[featureId] + "' From The Fixture") == true) {
+        // then delete the channelFeature
+        delete channelFeaturesObject[Object.keys(channelFeaturesObject)[featureId]];
+        // then update the channelFeatures
+        createFixtureDiv_updateChannelFeatures();
     }
 }
 
@@ -142,39 +140,37 @@ function editFixture(fixtureIdFromBtn) {
     document.getElementById("editFixtureDiv_fixtureName").value = fixture.name;
     document.getElementById("editFixtureDiv_startAddress").value = fixture.startAddress;
     document.getElementById("editFixtureDiv_endAddress").value = fixture.endAddress;
-    document.getElementById("editFixtureDiv_onChannel").value = fixture.onChannel;
-    document.getElementById("editFixtureDiv_onChannelValue").value = fixture.onChannelValue;
-    colorsObject = fixture.colors;
-    editFixtureDiv_updateColors();
+    channelFeaturesObject = fixture.channelFeatures;
+    editFixtureDiv_updateChannelFeatures();
     document.getElementById("fixturesDiv").classList.add("hidden");
     document.getElementById("editFixtureDiv").classList.remove("hidden");
 }
 
-function editFixtureDiv_addColor() {
-    // then hide the editFixtureDiv and open the addColorDiv
+function editFixtureDiv_addChannelFeature() {
+    // then hide the editFixtureDiv and open the addChannelFeatureDiv
     document.getElementById("editFixtureDiv").classList.add("hidden");
-    document.getElementById("addColorDiv").classList.remove("hidden");
+    document.getElementById("addChannelFeatureDiv").classList.remove("hidden");
 }
 
-function editFixtureDiv_removeColor(cid) {
-    if(confirm("Are You Sure That You Want To Remove The Color '" + Object.keys(colorsObject)[cid] + "' From The Fixture") == true) {
-        // then delete the color
-        delete colorsObject[Object.keys(colorsObject)[cid]];
-        // then update the color
-        editFixtureDiv_updateColors();
+function editFixtureDiv_removeChannelFeature(featureId) {
+    if(confirm("Are You Sure That You Want To Remove The Channel Feature '" + Object.keys(channelFeaturesObject)[featureId] + "' From The Fixture") == true) {
+        // then delete the channelFeature
+        delete colorsObject[Object.keys(channelFeaturesObject)[featureId]];
+        // then update the channelFeatures
+        editFixtureDiv_updateChannelFeatures();
     }
 }
 
-function editFixtureDiv_updateColors() {
-    // then display the colors as a button
-    document.getElementById("editFixtureDiv_colorsDiv").innerHTML = '<button class="btn button fullWidth" onclick="editFixtureDiv_addColor()">Add Color</button><br/><br/>';
-    for(var i = 0; i < Object.keys(colorsObject).length; i++) {
+function editFixtureDiv_updateChannelFeatures() {
+    // then display the channel features as a button each
+    document.getElementById("editFixtureDiv_channelFeaturesDiv").innerHTML = '<button class="btn button fullWidth" onclick="editFixtureDiv_addChannelFeature()">Add Channel Feature</button><br/><br/>';
+    for(var i = 0; i < Object.keys(channelFeaturesObject).length; i++) {
         let button = document.createElement("button");
         button.setAttribute("class", "btn button fullWidth");
-        let buttonTextNode = document.createTextNode(Object.keys(colorsObject)[i]);
+        let buttonTextNode = document.createTextNode(Object.keys(channelFeaturesObject)[i]);
         button.appendChild(buttonTextNode);
-        button.setAttribute("onclick", "editFixtureDiv_removeColor(" + i + ")");
-        document.getElementById("editFixtureDiv_colorsDiv").appendChild(button);
+        button.setAttribute("onclick", "editFixtureDiv_removeChannelFeature(" + i + ")");
+        document.getElementById("editFixtureDiv_channelFeaturesDiv").appendChild(button);
     }
 }
 
@@ -184,9 +180,7 @@ function editFixtureDiv_update() {
     fixture.name = document.getElementById("editFixtureDiv_fixtureName").value
     fixture.startAddress = parseInt(document.getElementById("editFixtureDiv_startAddress").value);
     fixture.endAddress = parseInt(document.getElementById("editFixtureDiv_endAddress").value);
-    fixture.colors = colorsObject;
-    fixture.onChannel = parseInt(document.getElementById("editFixtureDiv_onChannel").value);
-    fixture.onChannelValue = parseInt(document.getElementById("editFixtureDiv_onChannelValue").value);
+    fixture.channelFeatures = channelFeatures
     fixturesArray[fixtureId] = fixture;
     // then send it back to the ipc to write to the fixtures file
     ipc.on("SettingsSaveFixturesResponse", function(event, data) {
@@ -223,10 +217,10 @@ function editFixtureDiv_delete() {
 
 // addColorDiv
 
-function addColorDiv_addColor() {
-    // then get all of the data and collate it into a new Color
-    let colorName = document.getElementById("addColorDiv_colorName").value;
-    let colorObject = new Color(parseInt(document.getElementById("addColorDiv_colorOffValue").value), parseInt(document.getElementById("addColorDiv_colorMinValue").value), parseInt(document.getElementById("addColorDiv_colorMaxValue").value), parseInt(document.getElementById("addColorDiv_colorDmxChannel").value), document.getElementById("addColorDiv_dimmableViaOnChannel").checked);
+function addColorDiv_addChannelFeature() {
+    // then get all of the data and collate it into a new ChannelFeature
+    let channelFeatureName = document.getElementById("addColorDiv_channelFeatureName").value;
+    let channelFeatureObject = new ChannelFeature(parseInt(document.getElementById("addColorDiv_colorOffValue").value), parseInt(document.getElementById("addColorDiv_colorMinValue").value), parseInt(document.getElementById("addColorDiv_colorMaxValue").value), parseInt(document.getElementById("addColorDiv_colorDmxChannel").value), document.getElementById("addColorDiv_dimmableViaOnChannel").checked);
     // then if isEditingFixture is set to false
     if(isEditingFixture == false) {
         colorsObject[colorName] = colorObject;

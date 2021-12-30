@@ -175,6 +175,6 @@ function fixtureValueIndicatorChanged(event, element) {
 }
 function dmxOut(channel, value) {
 
-    let data = JSON.stringify({channel: channel, value: value});
+    let data = JSON.stringify({c: channel, v: value});
     ipc.send("WriteToDmxChannel", data);
 }

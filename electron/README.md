@@ -77,6 +77,8 @@ a fixtures object will be created, the id of the fixture will be represented by 
     - **type** - This string tells the software the type of channel it is from this list:
 
         - **OnChannel** - Tells the software that it is the OnChannel for the fixture
+
+        - **OnChannelMainDimmer** - Tells the software that it is the OnChannel for the fixture but that it is required to dim other features
         
         - **Dimmer** - Tells the software that this channel is fully dimmable from 0-255 - This will provide buttons like 0%, 50% and 100% to the user
 
