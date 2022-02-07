@@ -71,6 +71,8 @@ a fixtures object will be created, the id of the fixture will be represented by 
     }`
 
     The properties of this object are
+
+    - **[KEY]** - Shows The Channel Number That This ChannelFeature belongs to
     
     - **name** - This string is a human-friendly name for the channel
 

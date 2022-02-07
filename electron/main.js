@@ -76,6 +76,7 @@ ipc.on("SerialPortsList", function(event, data) {
                 portsObject[Object.keys(portsObject).length] = {"port": data[i].path, "name": arduinoProductIds[data[i].productId]}
             }
         }
+        portsObject[Object.keys(portsObject).length] = {"port": "FAKE-PORT", "name": "Fake Interface"};
         event.sender.send("SerialPortsListResponse", JSON.stringify(portsObject))
     });
 });
@@ -99,6 +100,14 @@ ipc.on("UseDevice", function(event, devicePort) {
         })
         IndexWindow.close();
     })
+});
+ipc.on("UseFakeDevice", function(event, devicePort) {
+    // then open the controller window and close the index window
+    ControllerWindow = createWindow(800, 600, "pages/controller.html", true, false);
+    ControllerWindow.once('ready-to-show', () => {
+        ControllerWindow.show();
+    })
+    IndexWindow.close();
 });
 
 
