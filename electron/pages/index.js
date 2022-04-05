@@ -59,10 +59,18 @@ function chooseDevice() {
         alert("No Devices Connected/Selected");
     }
     else {
+        if(currentDevicePort="FAKE-PORT") {
+            useDevice(currentDevicePort, true)
+        }
         useDevice(currentDevicePort);
     }
 }
 
-function useDevice(port) {
-    ipc.send("UseDevice", port);
+function useDevice(port, isFake) {
+    if(isFake) {
+        ipc.send("UseFakeDevice", "");
+    }
+    else {
+        ipc.send("UseDevice", port);
+    }
 }

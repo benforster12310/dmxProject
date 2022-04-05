@@ -103,7 +103,7 @@ function createFixtureDiv_create() {
 
 function createFixtureDiv_updateChannelFeatures() {
     // then display the channelFeatures as a button for each one
-    document.getElementById("createFixtureDiv_colorsDiv").innerHTML = '<button class="btn button fullWidth" onclick="createFixtureDiv_addChannelFeature()">Add Channel Feature</button><br/><br/>';
+    document.getElementById("createFixtureDiv_channelFeaturesDiv").innerHTML = '<button class="btn button fullWidth" onclick="createFixtureDiv_addChannelFeature()">Add Channel Feature</button><br/><br/>';
     for(var i = 0; i < Object.keys(channelFeaturesObject).length; i++) {
         let button = document.createElement("button");
         button.setAttribute("class", "btn button fullWidth");
@@ -155,7 +155,7 @@ function editFixtureDiv_addChannelFeature() {
 function editFixtureDiv_removeChannelFeature(featureId) {
     if(confirm("Are You Sure That You Want To Remove The Channel Feature '" + Object.keys(channelFeaturesObject)[featureId] + "' From The Fixture") == true) {
         // then delete the channelFeature
-        delete colorsObject[Object.keys(channelFeaturesObject)[featureId]];
+        delete channelFeaturesObject[Object.keys(channelFeaturesObject)[featureId]];
         // then update the channelFeatures
         editFixtureDiv_updateChannelFeatures();
     }
@@ -215,29 +215,33 @@ function editFixtureDiv_delete() {
     }
 }
 
-// addColorDiv
+// addChannelFeatureDiv
 
-function addColorDiv_addChannelFeature() {
+function addChannelFeatureDiv_channelFeatureTypeSelectorChanged(elmnt) {
+
+}
+
+function addChannelFeatureDiv_addChannelFeature() {
     // then get all of the data and collate it into a new ChannelFeature
-    let channelFeatureName = document.getElementById("addColorDiv_channelFeatureName").value;
-    let channelFeatureObject = new ChannelFeature(parseInt(document.getElementById("addColorDiv_colorOffValue").value), parseInt(document.getElementById("addColorDiv_colorMinValue").value), parseInt(document.getElementById("addColorDiv_colorMaxValue").value), parseInt(document.getElementById("addColorDiv_colorDmxChannel").value), document.getElementById("addColorDiv_dimmableViaOnChannel").checked);
+    let channelFeatureChannelNo = document.getElementById("addChannelFeatureDiv_channelFeatureChannelNo").value;
+    let channelFeatureObject = new ChannelFeature(parseInt(document.getElementById("addChannelFeatureDiv_channelFeatureChannelNo").value), document.getElementById("addChannelFeatureDiv_channelFeatureName").value, document.getElementById("addChannelFeatureDiv_channelFeatureTypeSelector").value, parseInt(document.getElementById("addColorDiv_colorDmxChannel").value), document.getElementById("addColorDiv_dimmableViaOnChannel").checked);
     // then if isEditingFixture is set to false
     if(isEditingFixture == false) {
-        colorsObject[colorName] = colorObject;
-        createFixtureDiv_updateColors();
+        channelFeaturesObject[channelFeatureChannelNo] = channelFeatureObject;
+        createFixtureDiv_updateChannelFeatures();
         document.getElementById("createFixtureDiv").classList.remove("hidden");
     }
     else {
-        // then add the color to the colorsObject
-        colorsObject[colorName] = colorObject;
-        editFixtureDiv_updateColors();
+        // then add the ChannelFeature to the channelFeaturesObject
+        channelFeaturesObject[channelFeatureChannelNo] = channelFeatureObject;
+        editFixtureDiv_updateChannelFeatures();
         document.getElementById("editFixtureDiv").classList.remove("hidden");
     }
-    document.getElementById("addColorDiv").classList.add("hidden");
-    document.getElementById("addColorDiv_colorName").value = "";
-    document.getElementById("addColorDiv_colorOffValue").value = "";
-    document.getElementById("addColorDiv_colorMinValue").value = "";
-    document.getElementById("addColorDiv_colorMaxValue").value = "";
-    document.getElementById("addColorDiv_colorDmxChannel").value = "";
-    document.getElementById("addColorDiv_dimmableViaOnChannel").checked = false;
+    document.getElementById("addChannelFeatureDiv").classList.add("hidden");
+    document.getElementById("addChannelFeatureDiv_channelFeatureName").value = "";
+    document.getElementById("addChannelFeatureDiv_channelFeatureChannelNo").value = "";
+    document.getElementById("addChannelFeatureDiv_channelFeatureTypeSelector").selectedIndex = 0;
+    document.getElementById("addChannelFeatureDiv_channelValues").value = "";
+    document.getElementById("addChannelFeatureDiv_colorDmxChannel").value = "";
+    document.getElementById("addChannelFeatureDiv_dimmableViaOnChannel").checked = false;
 }
