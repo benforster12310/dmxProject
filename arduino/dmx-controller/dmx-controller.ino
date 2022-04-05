@@ -1,4 +1,4 @@
-#include <ArduinoJson.h>
+ #include <ArduinoJson.h>
 #include <DmxSimple.h>
 
 const int function1ButtonPin = 4;
@@ -47,21 +47,21 @@ void loop() {
       // then do function 1 - dim uplights
       Serial.println("Doing Function 1");
       DmxSimple.write(1,255);
-      DmxSimple.write(2,127);
-      DmxSimple.write(3,127);
-      DmxSimple.write(4,127);
+      DmxSimple.write(2,40);
+      DmxSimple.write(3,40);
+      DmxSimple.write(4,40);
       DmxSimple.write(5,255);
-      DmxSimple.write(6,127);
-      DmxSimple.write(7,127);
-      DmxSimple.write(8,127);
+      DmxSimple.write(6,40);
+      DmxSimple.write(7,40);
+      DmxSimple.write(8,40);
       DmxSimple.write(9,255);
-      DmxSimple.write(10,127);
-      DmxSimple.write(11,127);
-      DmxSimple.write(12,127);
+      DmxSimple.write(10,40);
+      DmxSimple.write(11,40);
+      DmxSimple.write(12,40);
       DmxSimple.write(13,255);
-      DmxSimple.write(14,127);
-      DmxSimple.write(15,127);
-      DmxSimple.write(16,127);
+      DmxSimple.write(14,40);
+      DmxSimple.write(15,40);
+      DmxSimple.write(16,40);
       function1ButtonToggled = true;
       delay(500);
     }
@@ -135,26 +135,26 @@ void loop() {
     if(function3ButtonToggled == false) {
       // then do function 3 - dim downlights
       DmxSimple.write(17,255);
-      DmxSimple.write(18,127);
-      DmxSimple.write(19,127);
-      DmxSimple.write(20,127);
+      DmxSimple.write(18,40);
+      DmxSimple.write(19,40);
+      DmxSimple.write(20,40);
       DmxSimple.write(21,255);
-      DmxSimple.write(22,127);
-      DmxSimple.write(23,127);
-      DmxSimple.write(24,127);
+      DmxSimple.write(22,40);
+      DmxSimple.write(23,40);
+      DmxSimple.write(24,40);
       DmxSimple.write(25,255);
-      DmxSimple.write(26,127);
-      DmxSimple.write(27,127);
-      DmxSimple.write(28,127);
+      DmxSimple.write(26,40);
+      DmxSimple.write(27,40);
+      DmxSimple.write(28,40);
       DmxSimple.write(29,255);
-      DmxSimple.write(30,127);
-      DmxSimple.write(31,127);
-      DmxSimple.write(32,127);
+      DmxSimple.write(30,40);
+      DmxSimple.write(31,40);
+      DmxSimple.write(32,40);
       DmxSimple.write(33,255);
-      DmxSimple.write(34,127);
-      DmxSimple.write(35,127);
-      DmxSimple.write(36,127);
-      DmxSimple.write(37,127);
+      DmxSimple.write(34,40);
+      DmxSimple.write(35,40);
+      DmxSimple.write(36,40);
+      DmxSimple.write(37,40);
       function3ButtonToggled = true;
       delay(500);
     }
