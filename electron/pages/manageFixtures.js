@@ -217,6 +217,10 @@ function editFixtureDiv_delete() {
 
 // addChannelFeatureDiv
 
+function addChannelFeatureDiv_channelFeatureTypeSelectorChanged(elmnt) {
+
+}
+
 function addChannelFeatureDiv_addChannelFeature() {
     // then get all of the data and collate it into a new ChannelFeature
     let channelFeatureChannelNo = document.getElementById("addChannelFeatureDiv_channelFeatureChannelNo").value;
