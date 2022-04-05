@@ -218,7 +218,8 @@ function editFixtureDiv_delete() {
 // addChannelFeatureDiv
 
 function addChannelFeatureDiv_channelFeatureTypeSelectorChanged(elmnt) {
-
+    // then check which option is selected
+    // PAUSED DUE TO NOT ACTUALLY GETTING ME ANY CLOSER TO HAVING A BASIC WORKING PROTOTYPE - WILL BE IMPLEMENTED LATER
 }
 
 function addChannelFeatureDiv_addChannelFeature() {

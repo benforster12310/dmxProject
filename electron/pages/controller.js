@@ -94,52 +94,13 @@ function controlDiv_useFixture(fixtureBtn) {
 }
 
 function controlDiv_loadFixture(fixtureId) {
-    // then count how many colors this fixture has
-    let colors = fixturesArray[fixtureId].colors;
-    let numberOfColors = Object.keys(colors).length;
-    for(var i = 0; i < numberOfColors; i++) {
-        let colorName = Object.keys(colors)[i];
-        // then create a faderDiv for the color
-        let faderDiv = document.createElement("div");
-        faderDiv.setAttribute("class", "faderDiv");
-        // then create a button for the name of the color
-        let colorNameBtn = document.createElement("button");
-        colorNameBtn.setAttribute("class", "btn button fullWidth");
-        let colorNameBtnTextNode = document.createTextNode(colorName);
-        colorNameBtn.appendChild(colorNameBtnTextNode);
-        faderDiv.appendChild(colorNameBtn);
-        let brTag = document.createElement("br");
-        faderDiv.appendChild(brTag)
-        // then create the value indicator
-        let valueIndicator = document.createElement("input");
-        valueIndicator.setAttribute("type", "number");
-        valueIndicator.setAttribute("min", "0");
-        valueIndicator.setAttribute("max", "255");
-        valueIndicator.setAttribute("class", "btn button fullWidth");
-        valueIndicator.setAttribute("id", "valueIndicatorForColor_" + i);
-        valueIndicator.setAttribute("onkeyup", "fixtureValueIndicatorChanged(event, this)");
-        faderDiv.appendChild(valueIndicator);
-        let brTag2 = document.createElement("br");
-        faderDiv.appendChild(brTag2)
-        let values = ["100%", "75%", "50%", "25%", "0%"];
-        let valuesAsNumber = [255, 191, 127, 64, 0]
-        // then create 5 buttons
-        for(var x = 0; x < 5; x++) {
-            let btn = document.createElement("button")
-            let btnTxtNode = document.createTextNode(values[x]);
-            btn.appendChild(btnTxtNode);
-            btn.setAttribute("class", "btn button fullWidth");
-            btn.setAttribute("onclick", "buttonClicked(" + i + ", '" + valuesAsNumber[x] + "')");
-            faderDiv.appendChild(btn)
-            let brTag3 = document.createElement("br");
-            faderDiv.appendChild(brTag3)
-        }
-        // then append the faderDiv to the controlDiv_fadersDiv
-        document.getElementById("controlDiv_fadersDiv").appendChild(faderDiv);
+    // then count how many channelFeatures this fixture has
+    let channelFeatures = fixturesArray[fixtureId].channelFeatures;
+    let numberOfChannelFeatures = Object.keys(channelFeatures).length;
+    for(var i = 0; i < numberOfChannelFeatures; i++) {
+        let channelFeatureName = Object.keys(channelFeatures)[i];
+        
     }
-}
-function buttonClicked(i, value) {
-    console.log(value); document.getElementById('valueIndicatorForColor_' + i).value = value; fixtureValueIndicatorChanged({'keyCode':13}, document.getElementById('valueIndicatorForColor_' + i))
 }
 
 
@@ -159,22 +120,8 @@ settingsDiv_manageFixturesBtn.addEventListener("click", function() {
 
 // FIXTURES CODE
 
-function fixtureValueIndicatorChanged(event, element) {
-    if(event.keyCode == 13) {
-        let colorName = Object.keys(fixturesArray[fixtureBeingControlled].colors)[parseInt(element.id.split("valueIndicatorForColor_")[1])];
-        console.log(colorName);
-        // then get the channel id
-        let startingChannel = fixturesArray[fixtureBeingControlled].startAddress;
-        let channelId = fixturesArray[fixtureBeingControlled].colors[colorName].channel;
-        let onChannel = fixturesArray[fixtureBeingControlled].onChannel;
-        let onChannelValue = fixturesArray[fixtureBeingControlled].onChannelValue;
-        dmxOut((onChannel + startingChannel)-1, onChannelValue);
-        // then send the value to the arduino via the ipc
-        dmxOut((channelId + startingChannel)-1, element.value);
-    }
-}
-function dmxOut(channel, value) {
-
+// GENERAL CODE
+function dmxSend(channel, value) {
     let data = JSON.stringify({c: channel, v: value});
     ipc.send("WriteToDmxChannel", data);
 }
