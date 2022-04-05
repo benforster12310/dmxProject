@@ -44,3 +44,14 @@ body {
     width: 100%;
     color: white;
 }
+.dimmerNumberInput {
+    font-size: 300%;
+    color: white;
+    background-color: black;
+    text-align: center;
+    width: 100%;
+}
+.dimmerRangeSlider {
+    -webkit-appearance: slider-vertical;
+    float: left;
+}

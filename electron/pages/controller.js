@@ -88,7 +88,7 @@ ipc.send("SettingsGetFixtures", "");
 // controlDiv_useFixture
 function controlDiv_useFixture(fixtureBtn) {
     fixtureBeingControlled = fixtureBtn.id;
-    document.getElementById("controlDiv_fadersDiv").innerHTML = "";
+    document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
     controlDiv_loadFixture(fixtureBeingControlled);
     
 }
@@ -98,8 +98,60 @@ function controlDiv_loadFixture(fixtureId) {
     let channelFeatures = fixturesArray[fixtureId].channelFeatures;
     let numberOfChannelFeatures = Object.keys(channelFeatures).length;
     for(var i = 0; i < numberOfChannelFeatures; i++) {
-        let channelFeatureName = Object.keys(channelFeatures)[i];
-        
+        let channelFeatureChannel = Object.keys(channelFeatures)[i];
+        let channelFeatureName = channelFeatures[i+1].name;
+        let channelFeatureType = channelFeatures[i+1].type;
+        // then create a div with the channelFeatureName as the title
+        let channelFeatureDiv = document.createElement("div");
+        channelFeatureDiv.setAttribute("class", "channelFeatureDiv")
+        let channelFeatureNameBtn = document.createElement("button");
+        let channelFeatureNameBtnTextNode = document.createTextNode(channelFeatureName);
+        channelFeatureNameBtn.appendChild(channelFeatureNameBtnTextNode);
+        channelFeatureNameBtn.setAttribute("class", "button fullWidth");
+        channelFeatureDiv.appendChild(channelFeatureNameBtn)
+        // then check which type of channelFeature is being dealt with
+        if(channelFeatureType == "OnChannel") {
+            // if it is an on channel then simply put a button to turn the on channel on and off, this acts as the blackout for the individual light
+            // create a button
+            let onChannelButton = document.createElement("button");
+            let onChannelButtonTextNode = document.createTextNode("Turn ON");
+            onChannelButton.appendChild(onChannelButtonTextNode);
+            onChannelButton.setAttribute("class", "button fullWidth");
+            onChannelButton.setAttribute("onclick", "currentFixture_toggleOnChannel(this)")
+            onChannelButton.setAttribute("id", "currentFixture_onChannelButton");
+            channelFeatureDiv.appendChild(onChannelButton);
+
+        }
+        else if(channelFeatureType == "OnChannelMainDimmer") {
+            // if it is an on channel then simply put a range of values from 0, 25, 50, 75 and 100 to dim the light, also provide a number input that displays the current value and a range slider to allow the user to update with precision the value
+            // create a number input to display the range
+            let onChannelMainDimmerNumberInput = document.createElement("input");
+            onChannelMainDimmerNumberInput.setAttribute("type", "number");
+            onChannelMainDimmerNumberInput.setAttribute("min", "0");
+            onChannelMainDimmerNumberInput.setAttribute("max", "255");
+            onChannelMainDimmerNumberInput.setAttribute("id", "currentFixture_onChannelMainDimmerNumberInput");
+            onChannelMainDimmerNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
+            onChannelMainDimmerNumberInput.setAttribute("onchange", "currentFixture_onChannelMainDimmerNumberInputValueChanged()");
+            channelFeatureDiv.appendChild(onChannelMainDimmerNumberInput);
+            // create a slider to allow the user to edit the range
+            let onChannelMainDimmerRangeSlider = document.createElement("input");
+            onChannelMainDimmerRangeSlider.setAttribute("type", "range");
+            onChannelMainDimmerRangeSlider.setAttribute("min", "0");
+            onChannelMainDimmerRangeSlider.setAttribute("max", "255");
+            onChannelMainDimmerRangeSlider.setAttribute("id", "currentFixture_onChannelMainDimmerRangeSlider");
+            onChannelMainDimmerRangeSlider.setAttribute("class", "dimmerRangeSlider fullWidth");
+            onChannelMainDimmerRangeSlider.setAttribute("oninput", "currentFixture_onChannelMainDimmerRangeSliderValueChanged()");
+            channelFeatureDiv.appendChild(onChannelMainDimmerRangeSlider);
+
+        }
+        else if(channelFeatureType == "Dimmer") {
+
+        }
+        else if(channelFeatureType == "ExactValue") {
+
+        }
+        // then append the channelFeatureDiv to the controlDiv_channelFeaturesDiv
+        document.getElementById("controlDiv_channelFeaturesDiv").appendChild(channelFeatureDiv)
     }
 }
 
