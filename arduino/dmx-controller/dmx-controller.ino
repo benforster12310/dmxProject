@@ -15,7 +15,7 @@ bool function5ButtonToggled = false;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(19200);
-  Serial.setTimeout( 000);
+  Serial.setTimeout(1000);
   Serial.println("ready");
   DmxSimple.usePin(3);
   DmxSimple.maxChannel(70);
@@ -33,8 +33,8 @@ void loop() {
       StaticJsonDocument<48> doc;
       DeserializationError error = deserializeJson(doc, Serial);
       if(error) {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(error.f_str());
+        //Serial.print(F("deserializeJson() failed: "));
+        //Serial.println(error.f_str());
         return;
       }
 

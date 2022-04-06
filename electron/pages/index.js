@@ -59,10 +59,12 @@ function chooseDevice() {
         alert("No Devices Connected/Selected");
     }
     else {
-        if(currentDevicePort="FAKE-PORT") {
+        if(currentDevicePort == "FAKE-PORT") {
             useDevice(currentDevicePort, true)
         }
-        useDevice(currentDevicePort);
+        else {
+            useDevice(currentDevicePort);
+        }
     }
 }
 

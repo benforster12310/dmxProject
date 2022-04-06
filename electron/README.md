@@ -26,11 +26,14 @@ This file consists of the different fixtures that are on the DMX universe and wh
 
 a fixtures object will be created, the id of the fixture will be represented by a fixture id as so
 
-`"fixtures":{
-    "fixture1": {
-        "id": "fixture1",
-        "startAddress": 1
-    }
+`"fixtures": [
+        { 
+            "id": "fixture1",
+            "name": "Fixture 1",
+            "startAddress": 1,
+            "endAddress": 4,
+        }
+    ]
 }`
 
 ### The Properties
@@ -51,15 +54,6 @@ a fixtures object will be created, the id of the fixture will be represented by 
     4. **RGBLED** - This is a fixture that uses channels to mix colours using Red, Green and Blue LEDs
     5. **CUSTOM**- This is a fixture that you will have to tell the software how to use manually
 
-- **hasOnChannel** - This boolean indicates wether the light requires a value to be sent to a channel to turn it on
-
-- **isOnChannelDimmable** - This boolean indicates wether the onChannel is dimmable or not, if not an on channel value must be provided
-
-- **onChannel** - This integer value indicates which channel the light's on channel is e.g channel 8 on the fixture
-
-- **onChannelValue** - This integer value indicates the value that should be sent to the on channel of the fixture to enable the light source to be emmitted
-
-- **isOnChannelVisible** - This boolean value indicates if light is produced when the on channel is turned on, if true then when the light needs to be turned off then the software will turn the on channel off aswell as the colour channels
 
 - **channelFeatures** - This object provides a nested object about each channel, what it does and how to control it e.g
 

@@ -70,6 +70,7 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
     }
     else {
         fixturesArray = dataObject.fixtures;
+        console.log(fixturesArray);
         // then make buttons for each fixture
         for(var i = 0; i < fixturesArray.length; i++) {
             let button = document.createElement("button");
@@ -93,7 +94,10 @@ function controlDiv_useFixture(fixtureBtn) {
     
 }
 
+var currentFixtureId;
+
 function controlDiv_loadFixture(fixtureId) {
+    currentFixtureId = fixtureId;
     // then count how many channelFeatures this fixture has
     let channelFeatures = fixturesArray[fixtureId].channelFeatures;
     let numberOfChannelFeatures = Object.keys(channelFeatures).length;
@@ -112,18 +116,22 @@ function controlDiv_loadFixture(fixtureId) {
         // then check which type of channelFeature is being dealt with
         if(channelFeatureType == "OnChannel") {
             // if it is an on channel then simply put a button to turn the on channel on and off, this acts as the blackout for the individual light
+            var br = document.createElement("br");
+            channelFeatureDiv.appendChild(br);
             // create a button
             let onChannelButton = document.createElement("button");
             let onChannelButtonTextNode = document.createTextNode("Turn ON");
             onChannelButton.appendChild(onChannelButtonTextNode);
             onChannelButton.setAttribute("class", "button fullWidth");
-            onChannelButton.setAttribute("onclick", "currentFixture_toggleOnChannel(this)")
-            onChannelButton.setAttribute("id", "currentFixture_onChannelButton");
+            onChannelButton.setAttribute("onclick", "currentFixture_toggleOnChannel(" + (i+1) + ")")
+            onChannelButton.setAttribute("id", "currentFixture_onChannelButton" + (i+1));
             channelFeatureDiv.appendChild(onChannelButton);
 
         }
         else if(channelFeatureType == "OnChannelMainDimmer") {
             // if it is an on channel then simply put a range of values from 0, 25, 50, 75 and 100 to dim the light, also provide a number input that displays the current value and a range slider to allow the user to update with precision the value
+            var br = document.createElement("br");
+            channelFeatureDiv.appendChild(br);
             // create a number input to display the range
             let onChannelMainDimmerNumberInput = document.createElement("input");
             onChannelMainDimmerNumberInput.setAttribute("type", "number");
@@ -133,6 +141,8 @@ function controlDiv_loadFixture(fixtureId) {
             onChannelMainDimmerNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
             onChannelMainDimmerNumberInput.setAttribute("onchange", "currentFixture_onChannelMainDimmerNumberInputValueChanged()");
             channelFeatureDiv.appendChild(onChannelMainDimmerNumberInput);
+            var br = document.createElement("br");
+            channelFeatureDiv.appendChild(br);
             // create a slider to allow the user to edit the range
             let onChannelMainDimmerRangeSlider = document.createElement("input");
             onChannelMainDimmerRangeSlider.setAttribute("type", "range");
@@ -155,6 +165,28 @@ function controlDiv_loadFixture(fixtureId) {
     }
 }
 
+var currentFixtureValues = [];
+
+// OnChannel Code
+let currentFixture_onChannelState = 0;
+function currentFixture_toggleOnChannel(channelFeatureId) {
+    if(currentFixture_onChannelState == 0) {
+        // then turn the on channel to on (255)
+        currentFixtureValues[channelFeatureId-1] = 255;
+        dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], 255);
+        currentFixture_onChannelState = 1;
+        document.getElementById("currentFixture_onChannelButton" + channelFeatureId).innerHTML = "Turn OFF";
+    }
+    else {
+        // then turn the on channel to off (0)
+        currentFixtureValues[channelFeatureId-1] = 0;
+        dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], 0);
+        currentFixture_onChannelState = 0;
+        document.getElementById("currentFixture_onChannelButton" + channelFeatureId).innerHTML = "Turn ON";
+    }
+}
+
+
 
 // PROGRAMS SECTION CODE
 ////////////////////////////////////
@@ -174,6 +206,6 @@ settingsDiv_manageFixturesBtn.addEventListener("click", function() {
 
 // GENERAL CODE
 function dmxSend(channel, value) {
-    let data = JSON.stringify({c: channel, v: value});
+    let data = JSON.stringify({c: parseInt(channel), v: parseInt(value)});
     ipc.send("WriteToDmxChannel", data);
 }

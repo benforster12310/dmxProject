@@ -92,6 +92,7 @@ ipc.on("UseDevice", function(event, devicePort) {
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
 
     parser.on("data", function(data) {
+        console.log(data);
         interfacePort = devicePort;
         // then open the controller window and close the index window
         ControllerWindow = createWindow(800, 600, "pages/controller.html", true, false);
@@ -155,5 +156,5 @@ ipc.on("SettingsSaveFixtures", function(event, data) {
 // THE DMX PART
 ipc.on("WriteToDmxChannel", function(event, data) {
     arduinoSerialPort.write(data);
-    //console.log(data);
+    console.log(data);
 })
