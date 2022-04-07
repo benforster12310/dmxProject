@@ -82,6 +82,7 @@ ipc.on("SerialPortsList", function(event, data) {
 });
 
 let arduinoSerialPort = null;
+let fakePortUsed = false;
 
 ipc.on("UseDevice", function(event, devicePort) {
     // then try and connect to the device by opening a SerialPort to the arduino and sending the alive word to the arduino
@@ -90,6 +91,8 @@ ipc.on("UseDevice", function(event, devicePort) {
     })
     arduinoSerialPort = port;
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));
+    
+    fakePortUsed = false;
 
     parser.on("data", function(data) {
         console.log(data);
@@ -103,6 +106,7 @@ ipc.on("UseDevice", function(event, devicePort) {
     })
 });
 ipc.on("UseFakeDevice", function(event, devicePort) {
+    fakePortUsed = true;
     // then open the controller window and close the index window
     ControllerWindow = createWindow(800, 600, "pages/controller.html", true, false);
     ControllerWindow.once('ready-to-show', () => {
@@ -155,6 +159,11 @@ ipc.on("SettingsSaveFixtures", function(event, data) {
 
 // THE DMX PART
 ipc.on("WriteToDmxChannel", function(event, data) {
-    arduinoSerialPort.write(data);
+    if(fakePortUsed == false) {
+        arduinoSerialPort.write(data);
+    }
+    else {
+        console.log("FAKE-PORT USED")
+    }
     console.log(data);
 })
