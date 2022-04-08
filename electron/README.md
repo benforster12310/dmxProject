@@ -78,7 +78,9 @@ a fixtures object will be created, the id of the fixture will be represented by 
         
         - **Dimmer** - Tells the software that this channel is fully dimmable from 0-255 - This will provide buttons like 0%, 50% and 100% to the user
 
-        - **ExactValue** - Tells the software that exact values are needed to be sent to this channel - **If this is set then a values property must be set and with the key as the name of the value e.g. red and the value the value to send to that channel. This will provide the exact values that will be options for the user instead of the normal dimmer options**
+        - **ExactValue** - Tells the software that exact values are needed to be sent to this channel - **If this is set then a values property must be set and contain an array and then each button that needs to be created should be placed in a nested array with the name to display e.g. red and the value the value to send to that channel. This will provide the exact values that will be options for the user instead of the normal dimmer options**
+
+        - **ExactValueDimmer** - the same as having customisable buttons with a dimmer, this allows more control over moving head fixtures by allowing you to for example provide buttons for common rotation degrees while also having a range slider to allow you to spin the fixture as a dimmer channel would allow you to do so
 
         e.g.
 
@@ -91,11 +93,18 @@ a fixtures object will be created, the id of the fixture will be represented by 
 
         `{"name": "GOBOs",
         "type": "ExactValue",
-        "values": {
-            "spiral":6,
-            "none":0,
-            "circle":20  
-        }}`
+        "values": 
+            [["red", 10], ["green", 20]]
+        }`
+
+        e.g.
+
+        `{"name": "Swivel",
+        "type": "ExactValueDimmer",
+        "values": 
+            [["90deg", 50], ["540deg", 255]]
+        }`
+
 
 
 ## There is also a property called fixturesGroup

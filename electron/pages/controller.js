@@ -103,7 +103,6 @@ function controlDiv_loadFixture(fixtureId) {
     console.log(channelFeatures);
     for(channelFeature in channelFeatures) {
         console.log(channelFeature);
-        let channelFeatureChannel = Object.keys(channelFeatures)[i];
         let channelFeatureName = channelFeatures[channelFeature].name;
         let channelFeatureType = channelFeatures[channelFeature].type;
         // then create a div with the channelFeatureName as the title
@@ -129,32 +128,32 @@ function controlDiv_loadFixture(fixtureId) {
             channelFeatureDiv.appendChild(onChannelButton);
 
         }
-        else if(channelFeatureType == "OnChannelMainDimmer") {
-            // if it is an on channel then simply put a range of values from 0, 25, 50, 75 and 100 to dim the light, also provide a number input that displays the current value and a range slider to allow the user to update with precision the value
+        else if(channelFeatureType == "OnChannelMainDimmer" || channelFeatureType == "Dimmer") {
+            // if it is a dimmer then simply put a range of values from 0, 25, 50, 75 and 100 to dim the light, also provide a number input that displays the current value and a range slider to allow the user to update with precision the value
             var br = document.createElement("br");
             channelFeatureDiv.appendChild(br);
             // create a number input to display the range
-            let onChannelMainDimmerNumberInput = document.createElement("input");
-            onChannelMainDimmerNumberInput.setAttribute("type", "number");
-            onChannelMainDimmerNumberInput.setAttribute("min", "0");
-            onChannelMainDimmerNumberInput.setAttribute("max", "255");
-            onChannelMainDimmerNumberInput.setAttribute("value", "0");
-            onChannelMainDimmerNumberInput.setAttribute("id", "currentFixture_onChannelMainDimmerNumberInput");
-            onChannelMainDimmerNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
-            onChannelMainDimmerNumberInput.setAttribute("onchange", "currentFixture_onChannelMainDimmerNumberInputValueChanged(" + channelFeature + ")");
-            channelFeatureDiv.appendChild(onChannelMainDimmerNumberInput);
+            let dimmerNumberInput = document.createElement("input");
+            dimmerNumberInput.setAttribute("type", "number");
+            dimmerNumberInput.setAttribute("min", "0");
+            dimmerNumberInput.setAttribute("max", "255");
+            dimmerNumberInput.setAttribute("value", "0");
+            dimmerNumberInput.setAttribute("id", "currentFixture_dimmerNumberInput" + channelFeature);
+            dimmerNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
+            dimmerNumberInput.setAttribute("onchange", "currentFixture_dimmerNumberInputValueChanged(" + channelFeature + ")");
+            channelFeatureDiv.appendChild(dimmerNumberInput);
             var br = document.createElement("br");
             channelFeatureDiv.appendChild(br);
             // create a slider to allow the user to edit the range
-            let onChannelMainDimmerRangeSlider = document.createElement("input");
-            onChannelMainDimmerRangeSlider.setAttribute("type", "range");
-            onChannelMainDimmerRangeSlider.setAttribute("min", "0");
-            onChannelMainDimmerRangeSlider.setAttribute("max", "255");
-            onChannelMainDimmerRangeSlider.setAttribute("value", "0");
-            onChannelMainDimmerRangeSlider.setAttribute("id", "currentFixture_onChannelMainDimmerRangeSlider");
-            onChannelMainDimmerRangeSlider.setAttribute("class", "dimmerRangeSlider fullWidth");
-            onChannelMainDimmerRangeSlider.setAttribute("oninput", "currentFixture_onChannelMainDimmerRangeSliderValueChanged(" + channelFeature + ")");
-            channelFeatureDiv.appendChild(onChannelMainDimmerRangeSlider);
+            let dimmerRangeSlider = document.createElement("input");
+            dimmerRangeSlider.setAttribute("type", "range");
+            dimmerRangeSlider.setAttribute("min", "0");
+            dimmerRangeSlider.setAttribute("max", "255");
+            dimmerRangeSlider.setAttribute("value", "0");
+            dimmerRangeSlider.setAttribute("id", "currentFixture_dimmerRangeSlider" + channelFeature);
+            dimmerRangeSlider.setAttribute("class", "dimmerRangeSlider fullWidth");
+            dimmerRangeSlider.setAttribute("oninput", "currentFixture_dimmerRangeSliderValueChanged(" + channelFeature + ")");
+            channelFeatureDiv.appendChild(dimmerRangeSlider);
             // then create 5 buttons for 0%, 25%, 50%, 75%, 100%
             let buttons = [["100%", 255], ["75%", 191], ["50%", 127], ["25%", 64], ["0%", 0]];
             for(var i = 0; i < buttons.length; i++) {
@@ -164,16 +163,36 @@ function controlDiv_loadFixture(fixtureId) {
                 let buttonTextNode = document.createTextNode(buttons[i][0]);
                 button.appendChild(buttonTextNode);
                 button.setAttribute("class", "button fullWidth floatLeft");
-                button.setAttribute("onclick", "currentFixture_onChannelMainDimmerSetValue(" + channelFeature + ", " + buttons[i][1] + ")");
+                button.setAttribute("onclick", "currentFixture_dimmerSetValue(" + channelFeature + ", " + buttons[i][1] + ")");
                 channelFeatureDiv.appendChild(button)
             }
-
-        }
-        else if(channelFeatureType == "Dimmer") {
-
         }
         else if(channelFeatureType == "ExactValue") {
-
+            // if it is an exact value then put a number input and then provide buttons as those that are in the values property of the channelFeature
+            var br = document.createElement("br");
+            channelFeatureDiv.appendChild(br);
+            // create a number input to display the range
+            let exactValueNumberInput = document.createElement("input");
+            exactValueNumberInput.setAttribute("type", "number");
+            exactValueNumberInput.setAttribute("min", "0");
+            exactValueNumberInput.setAttribute("max", "255");
+            exactValueNumberInput.setAttribute("value", "0");
+            exactValueNumberInput.setAttribute("id", "currentFixture_exactValueNumberInput" + channelFeature);
+            exactValueNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
+            exactValueNumberInput.setAttribute("onchange", "currentFixture_exactValueNumberInputValueChanged(" + channelFeature + ")");
+            channelFeatureDiv.appendChild(exactValueNumberInput);
+            // then get the buttons that need to be created from the values section of the channel features
+            let buttons = channelFeatures[channelFeature].values;
+            for(var i = 0; i < buttons.length; i++) {
+                var br = document.createElement("br");
+                channelFeatureDiv.appendChild(br);
+                let button = document.createElement("button");
+                let buttonTextNode = document.createTextNode(buttons[i][0]);
+                button.appendChild(buttonTextNode);
+                button.setAttribute("class", "button fullWidth floatLeft");
+                button.setAttribute("onclick", "currentFixture_exactValueSetValue(" + channelFeature + ", " + buttons[i][1] + ")");
+                channelFeatureDiv.appendChild(button)
+            }
         }
         // then append the channelFeatureDiv to the controlDiv_channelFeaturesDiv
         document.getElementById("controlDiv_channelFeaturesDiv").appendChild(channelFeatureDiv)
@@ -200,42 +219,64 @@ function currentFixture_toggleOnChannel(channelFeatureId) {
         document.getElementById("currentFixture_onChannelButton" + channelFeatureId).innerHTML = "Turn ON";
     }
 }
-// OnChannelMainDimmer Code
-function currentFixture_onChannelMainDimmerNumberInputValueChanged(channelFeatureId) {
+// OnChannelMainDimmer Code & Dimmer Code
+function currentFixture_dimmerNumberInputValueChanged(channelFeatureId) {
     // then get the input
-    let val = document.getElementById('currentFixture_onChannelMainDimmerNumberInput').value;
+    let val = document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value;
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
         currentFixtureValues[channelFeatureId-1] = val;
         dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], val);
         // then update the slider
-        document.getElementById("currentFixture_onChannelMainDimmerRangeSlider").value = val;
+        document.getElementById("currentFixture_dimmerRangeSlider" + channelFeatureId).value = val;
     }
 }
-function currentFixture_onChannelMainDimmerRangeSliderValueChanged(channelFeatureId) {
+function currentFixture_dimmerRangeSliderValueChanged(channelFeatureId) {
     // then get the slider
-    let val = document.getElementById('currentFixture_onChannelMainDimmerRangeSlider').value;
+    let val = document.getElementById("currentFixture_dimmerRangeSlider" + channelFeatureId).value;
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
         currentFixtureValues[channelFeatureId-1] = val;
         dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], val);
         // then update the input
-        document.getElementById("currentFixture_onChannelMainDimmerNumberInput").value = val;
+        document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value = val;
     }
 }
-function currentFixture_onChannelMainDimmerSetValue(channelFeatureId, val) {
+function currentFixture_dimmerSetValue(channelFeatureId, val) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
        // then send the new value to the channel
        currentFixtureValues[channelFeatureId-1] = val;
        dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], val);
        // then update the input
-       document.getElementById("currentFixture_onChannelMainDimmerNumberInput").value = val;
+       document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value = val;
        // then update the slider
-       document.getElementById("currentFixture_onChannelMainDimmerRangeSlider").value = val;
+       document.getElementById("currentFixture_dimmerRangeSlider" +channelFeatureId).value = val;
     }
+}
+
+// ExactValue Code
+function currentFixture_exactValueNumberInputValueChanged(channelFeatureId) {
+    // then get the input
+    let val = document.getElementById("currentFixture_exactValueNumberInput" + channelFeatureId).value;
+    // then check the value to make sure it is in range
+    if(val > -1 && val <= 255) {
+        // then send the new value to the channel
+        currentFixtureValues[channelFeatureId-1] = val;
+        dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], val);
+    }
+}
+function currentFixture_exactValueSetValue(channelFeatureId, val) {
+    // then check the value to make sure it is in range
+    if(val > -1 && val <= 255) {
+        // then send the new value to the channel
+        currentFixtureValues[channelFeatureId-1] = val;
+        dmxSend(Object.keys(fixturesArray[currentFixtureId].channelFeatures)[channelFeatureId-1], val);
+        // then update the input
+        document.getElementById("currentFixture_exactValueNumberInput" + channelFeatureId).value = val;
+     }
 }
 
 
