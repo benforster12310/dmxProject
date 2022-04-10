@@ -124,11 +124,11 @@ function controlDiv_loadFixture(fixtureId) {
             onChannelButton.appendChild(onChannelButtonTextNode);
             onChannelButton.setAttribute("class", "button fullWidth");
             onChannelButton.setAttribute("onclick", "currentFixture_toggleOnChannel(" + channelFeature + ")");
-            onChannelButton.setAttribute("id", "currentFixture_onChannelButton" + channelFeature + ")");
+            onChannelButton.setAttribute("id", "currentFixture_onChannelButton" + channelFeature);
             channelFeatureDiv.appendChild(onChannelButton);
 
         }
-        else if(channelFeatureType == "OnChannelMainDimmer" || channelFeatureType == "Dimmer") {
+        else if(channelFeatureType == "OnChannelMainDimmer" || channelFeatureType == "Dimmer" || channelFeatureType == "ExactValueDimmer") {
             // if it is a dimmer then simply put a range of values from 0, 25, 50, 75 and 100 to dim the light, also provide a number input that displays the current value and a range slider to allow the user to update with precision the value
             var br = document.createElement("br");
             channelFeatureDiv.appendChild(br);
@@ -156,6 +156,11 @@ function controlDiv_loadFixture(fixtureId) {
             channelFeatureDiv.appendChild(dimmerRangeSlider);
             // then create 5 buttons for 0%, 25%, 50%, 75%, 100%
             let buttons = [["100%", 255], ["75%", 191], ["50%", 127], ["25%", 64], ["0%", 0]];
+            // then check if it is a ExactValueDimmer
+            if(channelFeatureType == "ExactValueDimmer") {
+                // if it is then replace the buttons with the values that the user has chosen
+                buttons = channelFeatures[channelFeature].values;
+            }
             for(var i = 0; i < buttons.length; i++) {
                 var br = document.createElement("br");
                 channelFeatureDiv.appendChild(br);

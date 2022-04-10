@@ -107,7 +107,7 @@ a fixtures object will be created, the id of the fixture will be represented by 
 
 
 
-## There is also a property called fixturesGroup
+## fixturesGroup property
 
 fixturesGroup contains nested arrays that use the key as the id for the group and then contains the id's of the fixtures in it e.g.
 
