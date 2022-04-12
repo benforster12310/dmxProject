@@ -1,0 +1,371 @@
+{
+    "success": true,
+    "fixturesGroup": {
+        "FrontWash": ["fixture10", "fixture11"]
+    },
+    "fixtures": [
+        {
+            "id": "fixture1",
+            "name": "FL Uplight",
+            "startAddress": 1,
+            "endAddress": 4,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture2",
+            "name": "FR Uplight",
+            "startAddress": 5,
+            "endAddress": 8,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture3",
+            "name": "RL Uplight",
+            "startAddress": 9,
+            "endAddress": 12,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture4",
+            "name": "RR Uplight",
+            "startAddress": 13,
+            "endAddress": 16,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture5",
+            "name": "FL Downlight",
+            "startAddress": 17,
+            "endAddress": 20,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture6",
+            "name": "FR Downlight",
+            "startAddress": 21,
+            "endAddress": 24,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture7",
+            "name": "RL Downlight",
+            "startAddress": 25,
+            "endAddress": 28,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture8",
+            "name": "RR Downlight",
+            "startAddress": 29,
+            "endAddress": 32,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannel"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture9",
+            "name": "Centre Downlight",
+            "startAddress": 33,
+            "endAddress": 40,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannelMainDimmer"
+                },
+                "2": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "5": {
+                    "name": "White",
+                    "type": "Dimmer"
+                },
+                "6": {
+                    "name": "Strobe Mode",
+                    "type": "ExactValue",
+                    "values": [
+                        ["BOTH", 99], ["LAMP", 199], ["STROBES", 255]
+                    ]
+                },
+                "7": {
+                    "name": "Strobe Speed",
+                    "type": "ExactValueDimmer",
+                    "values": [
+                        ["OFF", 0], ["SLOW", 10], ["FAST", 255]
+                    ]
+                },
+                "8": {
+                    "name": "Others",
+                    "type": "ExactValue",
+                    "values": [
+                        ["Manual", 0], ["Auto", 201], ["Sound", 255]
+                    ]
+                }
+            }
+        },
+        {
+            "id": "fixture10",
+            "name": "FL Screen Wash",
+            "startAddress": 41,
+            "endAddress": 48,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannelMainDimmer"
+                },
+                "2": {
+                    "name": "Strobe",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "CC",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "CCS",
+                    "type": "Dimmer"
+                },
+                "5": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "6": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "7": {
+                    "name": "Blue",
+                    "type": "Dimmer"
+                },
+                "8": {
+                    "name": "White",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture11",
+            "name": "FR Screen Wash",
+            "startAddress": 49,
+            "endAddress": 56,
+            "channelFeatures": {
+                "1": {
+                    "name": "On Channel",
+                    "type": "OnChannelMainDimmer"
+                },
+                "2": {
+                    "name": "Strobe",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "CC",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "CCS",
+                    "type": "Dimmer"
+                },
+                "5": {
+                    "name": "Red",
+                    "type": "Dimmer"
+                },
+                "6": {
+                    "name": "Green",
+                    "type": "Dimmer"
+                },
+                "7": {
+                    "name": "Blue",
+                    "type": "Dimmer"
+                },
+                "8": {
+                    "name": "White",
+                    "type": "Dimmer"
+                }
+            }
+        },
+        {
+            "id": "fixture12",
+            "name": "R Moving Head Spot",
+            "startAddress": 57,
+            "endAddress": 67,
+            "channelFeatures": {
+                "1": {
+                    "name": "L/R",
+                    "type": "Dimmer"
+                },
+                "2": {
+                    "name": "L/R F",
+                    "type": "Dimmer"
+                },
+                "3": {
+                    "name": "U/D",
+                    "type": "Dimmer"
+                },
+                "4": {
+                    "name": "U/D F",
+                    "type": "Dimmer"
+                },
+                "5": {
+                    "name": "Colour",
+                    "type": "ExactValue",
+                    "values": [["White", 0], ["Purple", 10], ["LightBlue", 20], ["Orange", 30], ["Green", 40], ["Yellow", 50], ["Red", 60], ["Blue", 70]]
+                },
+                "6": {
+                    "name": "GOBO",
+                    "type": "ExactValue",
+                    "values": [["None", 0], ["Ring", 8], ["Centre", 16], ["TriBubbles", 24], ["Pattern", 32], ["Bubbles", 40], ["Spiral", 48], ["Lines", 56]]
+                },
+                "7": {
+                    "name": "Strobe",
+                    "type": "Dimmer"
+                },
+                "8": {
+                    "name": "Main Dimmer",
+                    "type": "OnChannelMainDimmer"
+                }
+            }
+        }
+    ]
+}
