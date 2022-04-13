@@ -1,4 +1,4 @@
- #include <ArduinoJson.h>
+#include <ArduinoJson.h>
 #include <DmxSimple.h>
 
 const int function1ButtonPin = 4;
@@ -14,7 +14,7 @@ bool function5ButtonToggled = false;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(19200);
+  Serial.begin(38400);
   Serial.setTimeout(1000);
   Serial.println("ready");
   DmxSimple.usePin(3);

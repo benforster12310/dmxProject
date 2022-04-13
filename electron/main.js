@@ -87,7 +87,7 @@ let fakePortUsed = false;
 ipc.on("UseDevice", function(event, devicePort) {
     // then try and connect to the device by opening a SerialPort to the arduino and sending the alive word to the arduino
     let port = new SerialPort(devicePort, {
-        baudRate: 19200
+        baudRate: 38400
     })
     arduinoSerialPort = port;
     let parser = port.pipe(new Readline({ delimiter:"\r\n" }));

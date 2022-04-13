@@ -117,6 +117,7 @@ function controlDiv_useFixtureGroup(fixtureGroupBtn) {
     }
     // then get the first fixture from the fixtureArrayIndexInGroup
     console.log(fixturesArrayIndexInGroup[0]);
+    document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
     controlDiv_loadFixture(fixturesArrayIndexInGroup[0]);
     
 }
