@@ -58,3 +58,6 @@ body {
 .floatLeft {
     float: left;
 }
+.halfHeight {
+    height: 50%;
+}
