@@ -162,13 +162,13 @@ Any invalid id will be ignored and the group should continue to work normally bu
 
 The Properties:
 
-- **name** - the name of the chase/scene collection
+- **name** - the name of the chase/scene collection - **THIS MAY NOT BE USED**
 
 - **loopOnFinish** - this boolean tells the program to loop the scenes once the end is reached, this makes it behave like a chase
 
 - **syncToTime** - this boolean tells the program to use times provided in the next property to sync the scenes to timings provided by the program
 
-- **timings** - this object contains a key as the time and the property as the scene number, starting at 1 for scene 1
+- **timings** - this object contains a key as the time in ms from when the program is started and the property as the scene number, starting at 1 for scene 1
 
 - **scenes** - this array contains a nested array which then contains one object per fixture to control which has the following properties
 

@@ -1,3 +1,5 @@
+const { statSync } = require("fs");
+
 var ipc = require("electron").ipcRenderer;
 const dialog = require("electron").remote.dialog;
 
@@ -24,11 +26,11 @@ var currentOpenDiv = "controlDiv";
 
 function update() {
     document.getElementById("switchToControlBtn").classList.remove("navBarSelected");
-    document.getElementById("switchToProgrammingBtn").classList.remove("navBarSelected");
+    document.getElementById("switchToProgramBtn").classList.remove("navBarSelected");
     document.getElementById("switchToSettingsBtn").classList.remove("navBarSelected");
     document.getElementById(currentPageBtnId).classList.add("navBarSelected");
     document.getElementById("controlDiv").classList.add("hidden");
-    document.getElementById("programmingDiv").classList.add("hidden");
+    document.getElementById("programDiv").classList.add("hidden");
     document.getElementById("settingsDiv").classList.add("hidden");
     document.getElementById(currentOpenDiv).classList.remove("hidden");
     
@@ -43,10 +45,10 @@ switchToControlBtn.addEventListener("click", function() {
     update();
 });
 
-let switchToProgrammingBtn = document.getElementById("switchToProgrammingBtn");
+let switchToProgrammingBtn = document.getElementById("switchToProgramBtn");
 switchToProgrammingBtn.addEventListener("click", function() {
-    currentPageBtnId = "switchToProgrammingBtn";
-    currentOpenDiv = "programmingDiv";
+    currentPageBtnId = "switchToProgramBtn";
+    currentOpenDiv = "programDiv";
     update();
 });
 
@@ -71,7 +73,6 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
     }
     else {
         fixturesGroupObject = dataObject.fixturesGroup
-        console.log(fixturesGroupObject);
         // then make buttons for each fixtureGroup
         for(fixtureGroup in fixturesGroupObject) {
             let button = document.createElement("button");
@@ -83,7 +84,6 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
             document.getElementById("controlDiv_fixtureSelectorDiv").appendChild(button);
         }
         fixturesArray = dataObject.fixtures;
-        console.log(fixturesArray);
         // then make buttons for each fixture
         for(var i = 0; i < fixturesArray.length; i++) {
             let button = document.createElement("button");
@@ -99,7 +99,6 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         for(var i = 0; i < fixturesArray.length; i++) {
             fixtureIdToArrayIndexObject[fixturesArray[i].id] = i;
         }
-        console.log(fixtureIdToArrayIndexObject);
     }
 })
 ipc.send("SettingsGetFixtures", "");
@@ -324,6 +323,65 @@ function currentFixture_exactValueSetValue(channelFeatureId, val) {
 
 // PROGRAMS SECTION CODE
 ////////////////////////////////////
+var programFileNamesArray = [];
+var programNamesArray = [];
+var programObject = {}
+ipc.on("SettingsGetProgramsResponse", function(event, data) {
+    let dataObject = JSON.parse(data);
+    if(dataObject.success == false) {
+        console.log("Error SettingsGetProgramsResponse - no file or folder, retrying");
+        ipc.send("SettingsGetPrograms", "");
+    }
+    else {
+        if(dataObject.success == true) {
+            // then put the fileNames into an array
+            programFileNamesArray = dataObject.programs;
+            // then cycle through the array and make a button
+            for(var i = 0; i < programFileNamesArray.length; i++) {
+                let name = programFileNamesArray[i].split(".json")[0];
+                programNamesArray[i] = name
+                let button = document.createElement("button");
+                button.setAttribute("onclick", "programsDiv_selectProgram(this)");
+                button.setAttribute("id", i);
+                let textNode = document.createTextNode(name);
+                button.appendChild(textNode);
+                button.setAttribute("class", "btn button");
+                document.getElementById("programsDiv_programSelectorDiv").appendChild(button);
+            }
+        }
+    }
+});
+ipc.send("SettingsGetPrograms", "");
+
+function programsDiv_selectProgram(programButton) {
+    let programFileName = programFileNamesArray[programButton.id];
+    // then send a request to the ipc to read the contents of that file and return them to this process
+    ipc.send("SettingsGetProgramFileContents", JSON.stringify({"fileName": programFileName}));
+}
+
+ipc.on("SettingsGetProgramFileContentsResponse", function(event, data) {
+    // then parse the data
+    let dataObject = JSON.parse(data);
+    if(dataObject.success == true) {
+        // then load the entire contents into the programObject variable
+        programObject = dataObject;
+        // then make the display for the user
+        programsDiv_displayProgramInterface();
+    }
+})
+
+let loopOnFinish = false;
+let syncToTime = false;
+let numberOfScenes = 0;
+let currentScene = 0;
+
+function programsDiv_displayProgramInterface() {
+    currentScene = 0;
+    loopOnFinish = programObject.loopOnFinish;
+    syncToTime = programObject.syncToTime;
+    numberOfScenes = programObject.scenes.length;
+    console.log(numberOfScenes);
+}
 
 
 
@@ -336,7 +394,6 @@ settingsDiv_manageFixturesBtn.addEventListener("click", function() {
 })
 
 
-// FIXTURES CODE
 
 // GENERAL CODE
 function findAndWriteDmx(channelFeature, value) {

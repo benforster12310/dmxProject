@@ -156,6 +156,46 @@ ipc.on("SettingsSaveFixtures", function(event, data) {
     event.sender.send("SettingsSaveFixturesResponse", true);
 })
 
+ipc.on("SettingsGetPrograms", function(event, data) {
+    // then check if there is a folder in the documents called dmxProject
+    let folderPathToCheck = path.join(app.getPath("home"), "Documents", "dmxProject");
+    if(fs.existsSync(folderPathToCheck)) {
+        // then as the folder is there then check if there is a subfolder called programs
+        if(fs.existsSync(folderPathToCheck + "\\programs")) {
+            // if there is then read all of the separate files in that folder
+            let files = fs.readdirSync(folderPathToCheck + "\\programs");
+            let programFiles = [];
+            for(var i = 0; i < files.length; i++) {
+                if(path.extname(files[i]) === ".json") {
+                    programFiles.push(files[i]);
+                }
+            }
+            let returnObject = {"success": true, "programs": programFiles}
+            event.sender.send("SettingsGetProgramsResponse", JSON.stringify(returnObject));
+        }
+        else {
+            // then make a new folder
+            fs.mkdirSync(folderPathToCheck + "\\programs")
+            event.sender.send("SettingsGetProgramsResponse", JSON.stringify({"success":false}))
+        }
+    }
+    else {
+        // then create a folder
+        fs.mkdirSync(folderPathToCheck);
+        event.sender.send("SettingsGetProgramsResponse", JSON.stringify({"success":false}))
+    }
+})
+
+ipc.on("SettingsGetProgramFileContents", function(event, data) {
+    // then get the file name
+    let fileName = JSON.parse(data).fileName;
+    // then as the file should still be there then just read it
+    let folderPathToCheck = path.join(app.getPath("home"), "Documents", "dmxProject", "programs");
+    let programFileContents = fs.readFileSync(folderPathToCheck + "\\" + fileName, "utf8");
+    // then send the contents back to the controler process
+    event.sender.send("SettingsGetProgramFileContentsResponse", programFileContents);
+
+})
 
 // THE DMX PART
 ipc.on("WriteToDmxChannel", function(event, data) {
