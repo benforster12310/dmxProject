@@ -376,11 +376,69 @@ let numberOfScenes = 0;
 let currentScene = 0;
 
 function programsDiv_displayProgramInterface() {
+    document.getElementById("programsDiv_currentProgramDiv").innerHTML = "";
     currentScene = 0;
     loopOnFinish = programObject.loopOnFinish;
     syncToTime = programObject.syncToTime;
     numberOfScenes = programObject.scenes.length;
-    console.log(numberOfScenes);
+    // then make the nextScene and previousScene buttons and put them in an inline div with the scene number in a inputElement
+    // make the previousScene button
+    let previousSceneButton = document.createElement("button");
+    previousSceneButton.setAttribute("onclick", "programsDiv_previousScene()");
+    previousSceneButton.setAttribute("class", "btn button thirdWidth tenPercentHeight");
+    let previousSceneButtonTextNode = document.createTextNode("Previous Scene");
+    previousSceneButton.appendChild(previousSceneButtonTextNode);
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(previousSceneButton);
+    // make the indicator
+    let currentSceneIndicator = document.createElement("input");
+    currentSceneIndicator.setAttribute("type", "number");
+    currentSceneIndicator.setAttribute("class", "numberInput thirdWidth tenPercentHeight");
+    currentSceneIndicator.setAttribute("id", "programsDiv_currentSceneIndicator");
+    currentSceneIndicator.setAttribute("min", "0");
+    currentSceneIndicator.setAttribute("value", currentScene);
+    currentSceneIndicator.setAttribute("onchange", "programsDiv_currentSceneIndicatorValueChanged()");
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(currentSceneIndicator);
+    // make the nextScene button
+    let nextSceneButton = document.createElement("button");
+    nextSceneButton.setAttribute("onclick", "programsDiv_nextScene()");
+    nextSceneButton.setAttribute("class", "btn button thirdWidth tenPercentHeight");
+    let nextSceneButtonTextNode = document.createTextNode("Next Scene");
+    nextSceneButton.appendChild(nextSceneButtonTextNode);
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(nextSceneButton);
+    // then check if the program can be synced to time
+    if(syncToTime == true) {
+        let br = document.createElement("br");
+        document.getElementById("programsDiv_currentProgramDiv").appendChild(br);
+        let br2 = document.createElement("br");
+        document.getElementById("programsDiv_currentProgramDiv").appendChild(br2);
+        // then as it can be synced to time provide a button to start/stop the program and a timer in miliseconds and then another timer next to it counting down the time until the next scene change
+        let startStopButton = document.createElement("button");
+        startStopButton.setAttribute("onclick", "programsDiv_startStopSyncToTime()");
+        startStopButton.setAttribute("class", "btn button thirdWidth tenPercentHeight");
+        startStopButton.setAttribute("id", "programsDiv_startStopSyncToTimeButton");
+        let startStopButtonTextNode = document.createTextNode("Start Synced To Time");
+        startStopButton.appendChild(startStopButtonTextNode);
+        document.getElementById("programsDiv_currentProgramDiv").appendChild(startStopButton);
+        // then make the duration timer
+        let durationIndicatorElement = document.createElement("input");
+        durationIndicatorElement.setAttribute("type", "number");
+        durationIndicatorElement.setAttribute("class", "numberInput thirdWidth tenPercentHeight");
+        durationIndicatorElement.setAttribute("id", "programsDiv_syncToTimeDurationIndicator");
+        durationIndicatorElement.setAttribute("min", "0");
+        durationIndicatorElement.setAttribute("value", "0");
+        durationIndicatorElement.setAttribute("onchange", "programsDiv_syncToTimeDurationIndicatorValueChanged()");
+        document.getElementById("programsDiv_currentProgramDiv").appendChild(durationIndicatorElement);
+        // then make the countdown timer until scene change
+        let countdownSceneChangeIndicatorElement = document.createElement("input");
+        countdownSceneChangeIndicatorElement.setAttribute("type", "number");
+        countdownSceneChangeIndicatorElement.setAttribute("class", "numberInput thirdWidth tenPercentHeight");
+        countdownSceneChangeIndicatorElement.setAttribute("id", "programsDiv_syncToTimeCountdownSceneChangeIndicator");
+        countdownSceneChangeIndicatorElement.setAttribute("min", "0");
+        countdownSceneChangeIndicatorElement.setAttribute("value", "0");
+        countdownSceneChangeIndicatorElement.setAttribute("readonly", "true");
+        document.getElementById("programsDiv_currentProgramDiv").appendChild(countdownSceneChangeIndicatorElement);
+    }
+    // then regardless if the program can be synced to time or not provide an option for the scenes to be automatically skipped at an interval chosen by the user
 }
 
 

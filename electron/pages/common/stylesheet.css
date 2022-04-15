@@ -61,3 +61,15 @@ body {
 .halfHeight {
     height: 50%;
 }
+.numberInput {
+    font-size: 300%;
+    color: white;
+    background-color: black;
+    text-align: center;
+}
+.tenPercentHeight {
+    height: 10%;
+}
+.inlineBlock {
+    display: inline-block;
+}
