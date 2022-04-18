@@ -65,6 +65,7 @@ switchToSettingsBtn.addEventListener("click", function() {
 let fixturesArray = [];
 let fixturesGroupObject = {};
 let fixtureIdToArrayIndexObject = {}
+let dmxChannelValueObject = {};
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
     let dataObject = JSON.parse(data);
     if(dataObject.success == false) {
@@ -99,6 +100,7 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         for(var i = 0; i < fixturesArray.length; i++) {
             fixtureIdToArrayIndexObject[fixturesArray[i].id] = i;
         }
+        // then make the program remember the values of each fixture
     }
 })
 ipc.send("SettingsGetFixtures", "");
@@ -130,6 +132,7 @@ function controlDiv_useFixture(fixtureBtn) {
 }
 
 var currentFixtureId;
+var currentFixtureValues = [];
 
 function controlDiv_loadFixture(fixtureId) {
     currentFixtureId = fixtureId;
@@ -239,7 +242,6 @@ function controlDiv_loadFixture(fixtureId) {
     }
 }
 
-var currentFixtureValues = [];
 
 // OnChannel Code
 let currentFixture_onChannelState = 0;
@@ -479,6 +481,29 @@ settingsDiv_resetDmxBtn.addEventListener("click", function() {
     }
 })
 
+// BLACKOUT CODE
+let blackoutToggled = false;
+function blackout() {
+    if(blackoutToggled == false) {
+        // then toggle blackout
+        blackoutToggled = true;
+        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: ON";
+        // then send 0 to the dmx channels that have been interacted with
+        for(channel in dmxChannelValueObject) {
+            dmxSend(channel, 0);
+        }
+    }
+    else if(blackoutToggled == true) {
+        // then loop through the dmxChannelValueObject and send the value to the key
+        for(channel in dmxChannelValueObject) {
+            dmxSend(channel, dmxChannelValueObject[channel]);
+        }
+        // then untoggle blackout
+        blackoutToggled = false;
+        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: OFF";
+    }
+} 
+
 
 // GENERAL CODE
 function findAndWriteDmx(channelFeature, value) {
@@ -489,18 +514,27 @@ function findAndWriteDmx(channelFeature, value) {
             // then get the start channel of the fixture
             let startAddress = fixturesArray[fixturesArrayIndexInGroup[i]].startAddress;
             let channelFeatureReduced = channelFeature-1;
-            // then send the correct channel and the value to the dmxSend function
-            dmxSend(startAddress+channelFeatureReduced, value);
+            // then send the correct channel and the value to the beforeBlackoutDmxSend
+            beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
+
         }
     }
     else {
         // then get the start channel of the fixture
         let startAddress = fixturesArray[currentFixtureId].startAddress;
         let channelFeatureReduced = channelFeature-1;
-        // then send the correct channel and the value to the dmxSend function
-        dmxSend(startAddress+channelFeatureReduced, value);
+        // then send the correct channel and the value to the beforeBlackoutDmxSend function
+        beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
+        
     }
 }
+function beforeBlackoutDmxSend(channel, value) {
+    dmxChannelValueObject[channel] = value;
+    if(!blackoutToggled) {
+        dmxSend(channel, value);
+    }
+}
+
 function dmxSend(channel, value) {
     let data = JSON.stringify({c: parseInt(channel), v: parseInt(value)});
     ipc.send("WriteToDmxChannel", data);
