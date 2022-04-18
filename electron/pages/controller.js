@@ -439,6 +439,27 @@ function programsDiv_displayProgramInterface() {
         document.getElementById("programsDiv_currentProgramDiv").appendChild(countdownSceneChangeIndicatorElement);
     }
     // then regardless if the program can be synced to time or not provide an option for the scenes to be automatically skipped at an interval chosen by the user
+    let br = document.createElement("br");
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(br);
+    let br2 = document.createElement("br");
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(br2);
+    // then make a start stop button for the skipAfterInterval
+    let startStopButton = document.createElement("button");
+    startStopButton.setAttribute("onclick", "programsDiv_startStopSkipAfterInterval()");
+    startStopButton.setAttribute("class", "btn button halfWidth tenPercentHeight");
+    startStopButton.setAttribute("id", "programsDiv_startStopSkipAfterIntervalButton");
+    let startStopButtonTextNode = document.createTextNode("Start Skip After Interval");
+    startStopButton.appendChild(startStopButtonTextNode);
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(startStopButton);
+    // then make the number input to set the interval for skipping the scenes
+    let intervalInputElement = document.createElement("input");
+    intervalInputElement.setAttribute("type", "number");
+    intervalInputElement.setAttribute("class", "numberInput halfWidth tenPercentHeight");
+    intervalInputElement.setAttribute("id", "programsDiv_skipAfterIntervalInput");
+    intervalInputElement.setAttribute("min", "0");
+    intervalInputElement.setAttribute("value", "0");
+    intervalInputElement.setAttribute("onchange", "programsDiv_skipAfterIntervalInputValueChanged()");
+    document.getElementById("programsDiv_currentProgramDiv").appendChild(intervalInputElement);
 }
 
 
@@ -450,7 +471,13 @@ settingsDiv_manageFixturesBtn.addEventListener("click", function() {
     // then call the ipc to open another window
     ipc.send("OpenManageFixturesWindow", "");
 })
-
+let settingsDiv_resetDmxBtn = document.getElementById("settingsDiv_resetDmxBtn");
+settingsDiv_resetDmxBtn.addEventListener("click", function() {
+    // then send 0 to all of the dmx channels
+    for(var i = 1; i <= 255; i++) {
+        dmxSend(i, 0);
+    }
+})
 
 
 // GENERAL CODE
