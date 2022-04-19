@@ -67,6 +67,7 @@ let fixturesGroupObject = {};
 let fixtureIdToArrayIndexObject = {}
 let dmxChannelValueObject = {};
 let fixtureSliderValuesArray = [];
+let fixturesGroupSliderValuesObject = {};
 
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
     let dataObject = JSON.parse(data);
@@ -119,25 +120,41 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         }
         
         // then create a blank nested array with every fixtureGroup to show the position of the sliders for the fixtureGroups
-        // need to execute the code starting on line 132
-        
+        for(fixtureGroup in fixturesGroupObject) {
+            // then get the lights who are members of the fixtureGroup
+            let fixtureIdsInGroup = fixturesGroupObject[fixtureGroup];
+            // then get the first fixture
+            let firstFixtureIndex = fixtureIdToArrayIndexObject[fixtureIdsInGroup[0]];
+            let firstFixtureChannelFeatures = fixturesArray[firstFixtureIndex].channelFeatures;
+            // then get the channelFeatures from the firstFixture and put the channelNumber and then the value 0 into the object
+            let channelFeatureKeys = [];
+            for(key in firstFixtureChannelFeatures) {
+                channelFeatureKeys.push(key);
+            }
+            let channelFeatureKeysObject = {};
+            for(var j = 0; j < channelFeatureKeys.length; j++) {
+                channelFeatureKeysObject[channelFeatureKeys[j]] = 0;
+            }
+            fixturesGroupSliderValuesObject[fixtureGroup] = channelFeatureKeysObject;
+        }
     }
 })
 ipc.send("SettingsGetFixtures", "");
 
 var isFixtureGroup = false;
-var fixturesArrayIndexInGroup = []
+var fixturesArrayIndexInGroup = [];
+var currentFixtureGroup = "";
 
 // controlDiv_useFixtureGroup
 function controlDiv_useFixtureGroup(fixtureGroupBtn) {
     isFixtureGroup = true;
+    currentFixtureGroup = fixtureGroupBtn.id;
     // then get the lights who are members of the fixtureGroup
     let fixtureIdsInGroup = fixturesGroupObject[fixtureGroupBtn.id];
     for(var i = 0; i < fixtureIdsInGroup.length; i++) {
         fixturesArrayIndexInGroup[i] = fixtureIdToArrayIndexObject[fixtureIdsInGroup[i]];
     }
     // then get the first fixture from the fixtureArrayIndexInGroup
-    console.log(fixturesArrayIndexInGroup[0]);
     document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
     controlDiv_loadFixture(fixturesArrayIndexInGroup[0]);
     
@@ -145,6 +162,7 @@ function controlDiv_useFixtureGroup(fixtureGroupBtn) {
 // controlDiv_useFixture
 function controlDiv_useFixture(fixtureBtn) {
     isFixtureGroup = false;
+    currentFixtureGroup = "";
     fixturesArrayIndexInGroup = [];
     document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
     controlDiv_loadFixture(fixtureBtn.id);
@@ -152,14 +170,13 @@ function controlDiv_useFixture(fixtureBtn) {
 }
 
 var currentFixtureId;
+let currentFixture_onChannelState = 0;
 
 function controlDiv_loadFixture(fixtureId) {
     currentFixtureId = fixtureId;
     // then count how many channelFeatures this fixture has
     let channelFeatures = fixturesArray[fixtureId].channelFeatures;
-    console.log(channelFeatures);
     for(channelFeature in channelFeatures) {
-        console.log(channelFeature);
         let channelFeatureName = channelFeatures[channelFeature].name;
         let channelFeatureType = channelFeatures[channelFeature].type;
         // then create a div with the channelFeatureName as the title
@@ -170,6 +187,14 @@ function controlDiv_loadFixture(fixtureId) {
         channelFeatureNameBtn.appendChild(channelFeatureNameBtnTextNode);
         channelFeatureNameBtn.setAttribute("class", "button fullWidth");
         channelFeatureDiv.appendChild(channelFeatureNameBtn)
+        let defaultNumberInputValue = 0;
+        // then check if it is a fixtureGroup
+        if(isFixtureGroup) {
+            defaultNumberInputValue = fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeature];
+        }
+        else {
+            defaultNumberInputValue = fixtureSliderValuesArray[currentFixtureId][channelFeature];
+        }
         // then check which type of channelFeature is being dealt with
         if(channelFeatureType == "OnChannel") {
             // if it is an on channel then simply put a button to turn the on channel on and off, this acts as the blackout for the individual light
@@ -177,7 +202,15 @@ function controlDiv_loadFixture(fixtureId) {
             channelFeatureDiv.appendChild(br);
             // create a button
             let onChannelButton = document.createElement("button");
-            let onChannelButtonTextNode = document.createTextNode("Turn ON");
+            let onChannelButtonTextNode;
+            if(defaultNumberInputValue == 0) {
+                onChannelButtonTextNode = document.createTextNode("Turn ON");
+                currentFixture_onChannelState = 0;
+            }
+            else {
+                onChannelButtonTextNode = document.createTextNode("Turn OFF");
+                currentFixture_onChannelState = 1;
+            }
             onChannelButton.appendChild(onChannelButtonTextNode);
             onChannelButton.setAttribute("class", "button fullWidth");
             onChannelButton.setAttribute("onclick", "currentFixture_toggleOnChannel(" + channelFeature + ")");
@@ -194,7 +227,7 @@ function controlDiv_loadFixture(fixtureId) {
             dimmerNumberInput.setAttribute("type", "number");
             dimmerNumberInput.setAttribute("min", "0");
             dimmerNumberInput.setAttribute("max", "255");
-            dimmerNumberInput.setAttribute("value", "0");
+            dimmerNumberInput.setAttribute("value", defaultNumberInputValue);
             dimmerNumberInput.setAttribute("id", "currentFixture_dimmerNumberInput" + channelFeature);
             dimmerNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
             dimmerNumberInput.setAttribute("onchange", "currentFixture_dimmerNumberInputValueChanged(" + channelFeature + ")");
@@ -238,7 +271,7 @@ function controlDiv_loadFixture(fixtureId) {
             exactValueNumberInput.setAttribute("type", "number");
             exactValueNumberInput.setAttribute("min", "0");
             exactValueNumberInput.setAttribute("max", "255");
-            exactValueNumberInput.setAttribute("value", "0");
+            exactValueNumberInput.setAttribute("value", defaultNumberInputValue);
             exactValueNumberInput.setAttribute("id", "currentFixture_exactValueNumberInput" + channelFeature);
             exactValueNumberInput.setAttribute("class", "dimmerNumberInput fullWidth");
             exactValueNumberInput.setAttribute("onchange", "currentFixture_exactValueNumberInputValueChanged(" + channelFeature + ")");
@@ -258,17 +291,26 @@ function controlDiv_loadFixture(fixtureId) {
         }
         // then append the channelFeatureDiv to the controlDiv_channelFeaturesDiv
         document.getElementById("controlDiv_channelFeaturesDiv").appendChild(channelFeatureDiv)
+        // then set the values
+        if(channelFeatureType == "OnChannelMainDimmer" || channelFeatureType == "Dimmer" || channelFeatureType == "ExactValueDimmer") {
+            currentFixture_dimmerNumberInputValueChanged(channelFeature);
+        }
+        else if(channelFeatureType == "ExactValue") {
+            currentFixture_exactValueNumberInputValueChanged(channelFeature);
+        }
     }
 }
 
 
 // OnChannel Code
-let currentFixture_onChannelState = 0;
 function currentFixture_toggleOnChannel(channelFeatureId) {
     if(currentFixture_onChannelState == 0) {
         // then turn the on channel to on (255)
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = 255;
+        }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = 255;
         }
         findAndWriteDmx(channelFeatureId, 255);
         currentFixture_onChannelState = 1;
@@ -278,6 +320,9 @@ function currentFixture_toggleOnChannel(channelFeatureId) {
         // then turn the on channel to off (0)
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = 0;
+        }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = 0;
         }
         findAndWriteDmx(channelFeatureId, 0);
         currentFixture_onChannelState = 0;
@@ -294,6 +339,9 @@ function currentFixture_dimmerNumberInputValueChanged(channelFeatureId) {
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
         }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
+        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the slider
         document.getElementById("currentFixture_dimmerRangeSlider" + channelFeatureId).value = val;
@@ -308,6 +356,9 @@ function currentFixture_dimmerRangeSliderValueChanged(channelFeatureId) {
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
         }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
+        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
         document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value = val;
@@ -319,6 +370,9 @@ function currentFixture_dimmerSetValue(channelFeatureId, val) {
         // then send the new value to the channel
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
+        }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
         }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
@@ -338,6 +392,9 @@ function currentFixture_exactValueNumberInputValueChanged(channelFeatureId) {
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
         }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
+        }
         findAndWriteDmx(channelFeatureId, val);
     }
 }
@@ -347,6 +404,9 @@ function currentFixture_exactValueSetValue(channelFeatureId, val) {
         // then send the new value to the channel
         if(!isFixtureGroup) {
             fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
+        }
+        else {
+            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
         }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
