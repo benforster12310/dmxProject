@@ -306,24 +306,12 @@ function controlDiv_loadFixture(fixtureId) {
 function currentFixture_toggleOnChannel(channelFeatureId) {
     if(currentFixture_onChannelState == 0) {
         // then turn the on channel to on (255)
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = 255;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = 255;
-        }
         findAndWriteDmx(channelFeatureId, 255);
         currentFixture_onChannelState = 1;
         document.getElementById("currentFixture_onChannelButton" + channelFeatureId).innerHTML = "Turn OFF";
     }
     else {
         // then turn the on channel to off (0)
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = 0;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = 0;
-        }
         findAndWriteDmx(channelFeatureId, 0);
         currentFixture_onChannelState = 0;
         document.getElementById("currentFixture_onChannelButton" + channelFeatureId).innerHTML = "Turn ON";
@@ -336,12 +324,6 @@ function currentFixture_dimmerNumberInputValueChanged(channelFeatureId) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
-        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the slider
         document.getElementById("currentFixture_dimmerRangeSlider" + channelFeatureId).value = val;
@@ -353,12 +335,6 @@ function currentFixture_dimmerRangeSliderValueChanged(channelFeatureId) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
-        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
         document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value = val;
@@ -368,12 +344,6 @@ function currentFixture_dimmerSetValue(channelFeatureId, val) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
-        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
         document.getElementById("currentFixture_dimmerNumberInput" + channelFeatureId).value = val;
@@ -389,12 +359,6 @@ function currentFixture_exactValueNumberInputValueChanged(channelFeatureId) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
-        }
         findAndWriteDmx(channelFeatureId, val);
     }
 }
@@ -402,12 +366,6 @@ function currentFixture_exactValueSetValue(channelFeatureId, val) {
     // then check the value to make sure it is in range
     if(val > -1 && val <= 255) {
         // then send the new value to the channel
-        if(!isFixtureGroup) {
-            fixtureSliderValuesArray[currentFixtureId][channelFeatureId] = val;
-        }
-        else {
-            fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeatureId] = val;
-        }
         findAndWriteDmx(channelFeatureId, val);
         // then update the input
         document.getElementById("currentFixture_exactValueNumberInput" + channelFeatureId).value = val;
@@ -602,6 +560,13 @@ function blackout() {
 function findAndWriteDmx(channelFeature, value) {
     // then check if it is a fixtureGroup
     if(isFixtureGroup) {
+        // then make sure that the value has not already been set
+        if(fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeature] == value) {
+            // then break from the function
+            return
+        }
+        // then set the fixturesGroupSliderValuesObject
+        fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeature] = value;
         // then create a loop to repeat for each fixture in the fixturesArrayIndexInGroup
         for(var i = 0; i < fixturesArrayIndexInGroup.length; i++) {
             // then get the start channel of the fixture
@@ -609,16 +574,21 @@ function findAndWriteDmx(channelFeature, value) {
             let channelFeatureReduced = channelFeature-1;
             // then send the correct channel and the value to the beforeBlackoutDmxSend
             beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
-
         }
     }
     else {
+        // then make sure that the value has not already been set
+        if(fixtureSliderValuesArray[currentFixtureId][channelFeature] == value) {
+            // then break from the function
+            return
+        }
+        // then set the fixtureSliderValuesArray
+        fixtureSliderValuesArray[currentFixtureId][channelFeature] = value;
         // then get the start channel of the fixture
         let startAddress = fixturesArray[currentFixtureId].startAddress;
         let channelFeatureReduced = channelFeature-1;
         // then send the correct channel and the value to the beforeBlackoutDmxSend function
         beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
-        
     }
 }
 function beforeBlackoutDmxSend(channel, value) {
