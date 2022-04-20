@@ -59,6 +59,8 @@ switchToSettingsBtn.addEventListener("click", function() {
     update();
 });
 
+
+
 // CONTROL SECTION CODE
 ////////////////////////////////////
 // then load the fixtures
@@ -68,6 +70,29 @@ let fixtureIdToArrayIndexObject = {}
 let dmxChannelValueObject = {};
 let fixtureSliderValuesArray = [];
 let fixturesGroupSliderValuesObject = {};
+
+// BLACKOUT CODE
+let blackoutToggled = false;
+function blackout() {
+    if(blackoutToggled == false) {
+        // then toggle blackout
+        blackoutToggled = true;
+        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: ON";
+        // then send 0 to the dmx channels that have been interacted with
+        for(channel in dmxChannelValueObject) {
+            dmxSend(channel, 0);
+        }
+    }
+    else if(blackoutToggled == true) {
+        // then loop through the dmxChannelValueObject and send the value to the key
+        for(channel in dmxChannelValueObject) {
+            dmxSend(channel, dmxChannelValueObject[channel]);
+        }
+        // then untoggle blackout
+        blackoutToggled = false;
+        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: OFF";
+    }
+} 
 
 ipc.on("SettingsGetFixturesResponse", function(event, data) {
     let dataObject = JSON.parse(data);
@@ -80,7 +105,7 @@ ipc.on("SettingsGetFixturesResponse", function(event, data) {
         // then make buttons for each fixtureGroup
         for(fixtureGroup in fixturesGroupObject) {
             let button = document.createElement("button");
-            button.setAttribute("onclick", "controlDiv_useFixtureGroup(this)");
+            button.setAttribute("onclick", "controlDiv_useFixtureGroup(this.id, true)");
             button.setAttribute("id", fixtureGroup);
             let textNode = document.createTextNode(fixtureGroup);
             button.appendChild(textNode);
@@ -146,17 +171,19 @@ var fixturesArrayIndexInGroup = [];
 var currentFixtureGroup = "";
 
 // controlDiv_useFixtureGroup
-function controlDiv_useFixtureGroup(fixtureGroupBtn) {
+function controlDiv_useFixtureGroup(fixtureGroup, allowLoadFixture) {
     isFixtureGroup = true;
-    currentFixtureGroup = fixtureGroupBtn.id;
+    currentFixtureGroup = fixtureGroup;
     // then get the lights who are members of the fixtureGroup
-    let fixtureIdsInGroup = fixturesGroupObject[fixtureGroupBtn.id];
+    let fixtureIdsInGroup = fixturesGroupObject[fixtureGroup];
     for(var i = 0; i < fixtureIdsInGroup.length; i++) {
         fixturesArrayIndexInGroup[i] = fixtureIdToArrayIndexObject[fixtureIdsInGroup[i]];
     }
     // then get the first fixture from the fixtureArrayIndexInGroup
-    document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
-    controlDiv_loadFixture(fixturesArrayIndexInGroup[0]);
+    if(allowLoadFixture) {
+        document.getElementById("controlDiv_channelFeaturesDiv").innerHTML = "";
+        controlDiv_loadFixture(fixturesArrayIndexInGroup[0]);
+    }
     
 }
 // controlDiv_useFixture
@@ -427,6 +454,59 @@ let loopOnFinish = false;
 let syncToTime = false;
 let numberOfScenes = 0;
 let currentScene = 0;
+let scenes;
+
+// sceneindicators
+function programsDiv_previousScene() {
+    // then make sure that the current scene is not already zero
+    if(currentScene > 0) {
+        // then call the changeScene function
+        changeScene(currentScene-1);
+    }
+}
+function programsDiv_nextScene() {
+    // then make sure that the current scene is not already the last scene
+    if(currentScene < numberOfScenes-1) {
+        // then call the changeScene function
+        changeScene(currentScene+1);
+    }
+}
+function programsDiv_currentSceneIndicatorValueChanged() {
+    // then get the value
+    let val = document.getElementById("programsDiv_currentSceneIndicator").value;
+    // then make sure that the value is correct
+    if(val >= 0 && val <= numberOfScenes-1) {
+        // then call the changeScene function
+        changeScene(val);
+    }
+}
+function changeScene(sceneToChangeTo) {
+    // then access the currentScene and read all of the values
+    let currentSceneSubArray = scenes[currentScene];
+    // then go through the array and read the objects
+    for(var i = 0; i < currentSceneSubArray.length; i++) {
+        let object = currentSceneSubArray[i];
+        let objectChannels = object.channels;
+        // then go through each channel and turn it to off
+        for(channelKey in objectChannels) {
+            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
+        }
+    }
+    // then move to the new scene
+    currentScene = sceneToChangeTo;
+    document.getElementById("programsDiv_currentSceneIndicator").value = currentScene;
+    // then access the currentScene and read all of the values
+    currentSceneSubArray = scenes[currentScene];
+    // then go through the array and read the objects
+    for(var i = 0; i < currentSceneSubArray.length; i++) {
+        let object = currentSceneSubArray[i];
+        let objectChannels = object.channels;
+        // then go through each channel and turn it to off
+        for(channelKey in objectChannels) {
+            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, objectChannels[channelKey]);
+        }
+    }
+}
 
 function programsDiv_displayProgramInterface() {
     document.getElementById("programsDiv_currentProgramDiv").innerHTML = "";
@@ -434,6 +514,7 @@ function programsDiv_displayProgramInterface() {
     loopOnFinish = programObject.loopOnFinish;
     syncToTime = programObject.syncToTime;
     numberOfScenes = programObject.scenes.length;
+    scenes = programObject.scenes;
     // then make the nextScene and previousScene buttons and put them in an inline div with the scene number in a inputElement
     // make the previousScene button
     let previousSceneButton = document.createElement("button");
@@ -513,8 +594,14 @@ function programsDiv_displayProgramInterface() {
     intervalInputElement.setAttribute("value", "0");
     intervalInputElement.setAttribute("onchange", "programsDiv_skipAfterIntervalInputValueChanged()");
     document.getElementById("programsDiv_currentProgramDiv").appendChild(intervalInputElement);
-}
 
+    // then turn blackout on
+    if(!blackoutToggled) {
+        blackout();
+    }
+    // then call the change scene function to initalise
+    changeScene(0)
+}
 
 
 // SETTINGS SECTION CODE
@@ -531,30 +618,6 @@ settingsDiv_resetDmxBtn.addEventListener("click", function() {
         dmxSend(i, 0);
     }
 })
-
-// BLACKOUT CODE
-let blackoutToggled = false;
-function blackout() {
-    if(blackoutToggled == false) {
-        // then toggle blackout
-        blackoutToggled = true;
-        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: ON";
-        // then send 0 to the dmx channels that have been interacted with
-        for(channel in dmxChannelValueObject) {
-            dmxSend(channel, 0);
-        }
-    }
-    else if(blackoutToggled == true) {
-        // then loop through the dmxChannelValueObject and send the value to the key
-        for(channel in dmxChannelValueObject) {
-            dmxSend(channel, dmxChannelValueObject[channel]);
-        }
-        // then untoggle blackout
-        blackoutToggled = false;
-        document.getElementById("mainWindow_blackoutBtn").innerHTML = "BLACKOUT: OFF";
-    }
-} 
-
 
 // GENERAL CODE
 function findAndWriteDmx(channelFeature, value) {
@@ -586,6 +649,42 @@ function findAndWriteDmx(channelFeature, value) {
         fixtureSliderValuesArray[currentFixtureId][channelFeature] = value;
         // then get the start channel of the fixture
         let startAddress = fixturesArray[currentFixtureId].startAddress;
+        let channelFeatureReduced = channelFeature-1;
+        // then send the correct channel and the value to the beforeBlackoutDmxSend function
+        beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
+    }
+}
+function findAndWriteDmxForScenes(isAFixtureGroup, currentId, channelFeature, value) {
+    // then check if it is a fixtureGroup
+    if(isAFixtureGroup) {
+        controlDiv_useFixtureGroup(currentId, false)
+        // then make sure that the value has not already been set
+        if(fixturesGroupSliderValuesObject[currentId][channelFeature] == value) {
+            // then break from the function
+            console.log(isAFixtureGroup)
+            return
+        }
+        // then set the fixturesGroupSliderValuesObject
+        fixturesGroupSliderValuesObject[currentId][channelFeature] = value;
+        // then create a loop to repeat for each fixture in the fixturesArrayIndexInGroup
+        for(var i = 0; i < fixturesArrayIndexInGroup.length; i++) {
+            // then get the start channel of the fixture
+            let startAddress = fixturesArray[fixturesArrayIndexInGroup[i]].startAddress;
+            let channelFeatureReduced = channelFeature-1;
+            // then send the correct channel and the value to the beforeBlackoutDmxSend
+            beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
+        }
+    }
+    else {
+        // then make sure that the value has not already been set
+        if(fixtureSliderValuesArray[fixtureIdToArrayIndexObject[currentId]][channelFeature] == value) {
+            // then break from the function
+            return
+        }
+        // then set the fixtureSliderValuesArray
+        fixtureSliderValuesArray[fixtureIdToArrayIndexObject[currentId]][channelFeature] = value;
+        // then get the start channel of the fixture
+        let startAddress = fixturesArray[fixtureIdToArrayIndexObject[currentId]].startAddress;
         let channelFeatureReduced = channelFeature-1;
         // then send the correct channel and the value to the beforeBlackoutDmxSend function
         beforeBlackoutDmxSend(startAddress+channelFeatureReduced, value);
