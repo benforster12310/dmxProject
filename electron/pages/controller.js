@@ -461,14 +461,14 @@ function programsDiv_previousScene() {
     // then make sure that the current scene is not already zero
     if(programsDiv_currentScene > 0) {
         // then call the changeScene function
-        programsDiv_changeScene(currentScene-1);
+        programsDiv_changeScene(programsDiv_currentScene-1);
     }
 }
 function programsDiv_nextScene() {
     // then make sure that the current scene is not already the last scene
     if(programsDiv_currentScene < programsDiv_numberOfScenes-1) {
         // then call the changeScene function
-        programsDiv_changeScene(currentScene+1);
+        programsDiv_changeScene(programsDiv_currentScene+1);
     }
 }
 function programsDiv_currentSceneIndicatorValueChanged() {
