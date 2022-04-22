@@ -450,41 +450,41 @@ ipc.on("SettingsGetProgramFileContentsResponse", function(event, data) {
     }
 })
 
-let loopOnFinish = false;
-let syncToTime = false;
-let numberOfScenes = 0;
-let currentScene = 0;
-let scenes;
+let programsDiv_loopOnFinish = false;
+let programsDiv_syncToTime = false;
+let programsDiv_numberOfScenes = 0;
+let programsDiv_currentScene = 0;
+let programsDiv_scenes;
 
 // sceneindicators
 function programsDiv_previousScene() {
     // then make sure that the current scene is not already zero
-    if(currentScene > 0) {
+    if(programsDiv_currentScene > 0) {
         // then call the changeScene function
-        changeScene(currentScene-1);
+        programsDiv_changeScene(currentScene-1);
     }
 }
 function programsDiv_nextScene() {
     // then make sure that the current scene is not already the last scene
-    if(currentScene < numberOfScenes-1) {
+    if(programsDiv_currentScene < programsDiv_numberOfScenes-1) {
         // then call the changeScene function
-        changeScene(currentScene+1);
+        programsDiv_changeScene(currentScene+1);
     }
 }
 function programsDiv_currentSceneIndicatorValueChanged() {
     // then get the value
     let val = document.getElementById("programsDiv_currentSceneIndicator").value;
     // then make sure that the value is correct
-    if(val >= 0 && val <= numberOfScenes-1) {
+    if(val >= 0 && val <= programsDiv_numberOfScenes-1) {
         // then call the changeScene function
-        changeScene(val);
+        programsDiv_changeScene(val);
     }
 }
-function changeScene(sceneToChangeTo) {
+function programsDiv_changeScene(sceneToChangeTo) {
     // then move to the new scene
     document.getElementById("programsDiv_currentSceneIndicator").value = sceneToChangeTo;
     // then access the currentScene and read all of the values
-    let currentSceneSubArray = scenes[sceneToChangeTo];
+    let currentSceneSubArray = programsDiv_scenes[sceneToChangeTo];
     // then go through the array and read the objects
     for(var i = 0; i < currentSceneSubArray.length; i++) {
         let object = currentSceneSubArray[i];
@@ -495,7 +495,7 @@ function changeScene(sceneToChangeTo) {
         }
     }
     // then access the currentScene and read all of the values
-    currentSceneSubArray = scenes[currentScene];
+    currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
     // then go through the array and read the objects
     for(var i = 0; i < currentSceneSubArray.length; i++) {
         let object = currentSceneSubArray[i];
@@ -506,17 +506,17 @@ function changeScene(sceneToChangeTo) {
         }
     }
     // then set the next scene
-    currentScene = sceneToChangeTo;
+    programsDiv_currentScene = sceneToChangeTo;
     
 }
 
 function programsDiv_displayProgramInterface() {
     document.getElementById("programsDiv_currentProgramDiv").innerHTML = "";
-    currentScene = 0;
-    loopOnFinish = programObject.loopOnFinish;
-    syncToTime = programObject.syncToTime;
-    numberOfScenes = programObject.scenes.length;
-    scenes = programObject.scenes;
+    programsDiv_currentScene = 0;
+    programsDiv_loopOnFinish = programObject.loopOnFinish;
+    programsDiv_syncToTime = programObject.syncToTime;
+    programsDiv_numberOfScenes = programObject.scenes.length;
+    programsDiv_scenes = programObject.scenes;
     // then make the nextScene and previousScene buttons and put them in an inline div with the scene number in a inputElement
     // make the previousScene button
     let previousSceneButton = document.createElement("button");
@@ -531,7 +531,7 @@ function programsDiv_displayProgramInterface() {
     currentSceneIndicator.setAttribute("class", "numberInput thirdWidth tenPercentHeight");
     currentSceneIndicator.setAttribute("id", "programsDiv_currentSceneIndicator");
     currentSceneIndicator.setAttribute("min", "0");
-    currentSceneIndicator.setAttribute("value", currentScene);
+    currentSceneIndicator.setAttribute("value", programsDiv_currentScene);
     currentSceneIndicator.setAttribute("onchange", "programsDiv_currentSceneIndicatorValueChanged()");
     document.getElementById("programsDiv_currentProgramDiv").appendChild(currentSceneIndicator);
     // make the nextScene button
@@ -542,7 +542,7 @@ function programsDiv_displayProgramInterface() {
     nextSceneButton.appendChild(nextSceneButtonTextNode);
     document.getElementById("programsDiv_currentProgramDiv").appendChild(nextSceneButton);
     // then check if the program can be synced to time
-    if(syncToTime == true) {
+    if(programsDiv_syncToTime == true) {
         let br = document.createElement("br");
         document.getElementById("programsDiv_currentProgramDiv").appendChild(br);
         let br2 = document.createElement("br");
@@ -602,7 +602,7 @@ function programsDiv_displayProgramInterface() {
         blackout();
     }
     // then call the change scene function to initalise
-    changeScene(0)
+    programsDiv_changeScene(0);
 }
 
 
