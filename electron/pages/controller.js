@@ -481,22 +481,10 @@ function programsDiv_currentSceneIndicatorValueChanged() {
     }
 }
 function changeScene(sceneToChangeTo) {
-    // then access the currentScene and read all of the values
-    let currentSceneSubArray = scenes[currentScene];
-    // then go through the array and read the objects
-    for(var i = 0; i < currentSceneSubArray.length; i++) {
-        let object = currentSceneSubArray[i];
-        let objectChannels = object.channels;
-        // then go through each channel and turn it to off
-        for(channelKey in objectChannels) {
-            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
-        }
-    }
     // then move to the new scene
-    currentScene = sceneToChangeTo;
-    document.getElementById("programsDiv_currentSceneIndicator").value = currentScene;
+    document.getElementById("programsDiv_currentSceneIndicator").value = sceneToChangeTo;
     // then access the currentScene and read all of the values
-    currentSceneSubArray = scenes[currentScene];
+    let currentSceneSubArray = scenes[sceneToChangeTo];
     // then go through the array and read the objects
     for(var i = 0; i < currentSceneSubArray.length; i++) {
         let object = currentSceneSubArray[i];
@@ -506,6 +494,20 @@ function changeScene(sceneToChangeTo) {
             findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, objectChannels[channelKey]);
         }
     }
+    // then access the currentScene and read all of the values
+    currentSceneSubArray = scenes[currentScene];
+    // then go through the array and read the objects
+    for(var i = 0; i < currentSceneSubArray.length; i++) {
+        let object = currentSceneSubArray[i];
+        objectChannels = object.channels;
+        // then go through each channel and turn it to off
+        for(channelKey in objectChannels) {
+            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
+        }
+    }
+    // then set the next scene
+    currentScene = sceneToChangeTo;
+    
 }
 
 function programsDiv_displayProgramInterface() {
