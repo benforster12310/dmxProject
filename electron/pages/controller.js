@@ -455,6 +455,8 @@ let programsDiv_syncToTime = false;
 let programsDiv_numberOfScenes = 0;
 let programsDiv_currentScene = 0;
 let programsDiv_scenes;
+let programsDiv_startStopSyncToTimeDuration = 0;
+let programsDiv_startStopSyncToTimePaused = true;
 
 // sceneindicators
 function programsDiv_previousScene() {
@@ -508,6 +510,27 @@ function programsDiv_changeScene(sceneToChangeTo) {
     // then set the next scene
     programsDiv_currentScene = sceneToChangeTo;
     
+}
+let programsDiv_syncToTimeIntervalId;
+function programsDiv_startStopSyncToTime() {
+    if(programsDiv_startStopSyncToTimePaused) {
+        document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Stop Synced To Time";
+        // then as it is paused then start it again
+        programsDiv_startStopSyncToTimePaused = false;
+        programsDiv_syncToTimeIntervalId = setInterval(function() {
+            // then increment the duration
+            programsDiv_startStopSyncToTimeDuration++
+            //document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
+        }, 1);
+        console.log(programsDiv_syncToTimeIntervalId);
+    }
+    else {
+        // then stop the sync to time bit
+        console.log(programsDiv_syncToTimeIntervalId);
+        clearInterval(programsDiv_syncToTimeIntervalId)
+        document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Start Synced To Time";
+        programsDiv_startStopSyncToTimePaused = true;
+    }
 }
 
 function programsDiv_displayProgramInterface() {
