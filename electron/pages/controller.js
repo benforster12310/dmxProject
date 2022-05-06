@@ -487,25 +487,13 @@ function programsDiv_currentSceneIndicatorValueChanged() {
 // NEEDS ADAPTING TO ALLOW
 // FOR ALL COMMANDS TO BE FIRED AT ONCE AND ONLY THE CHANGED COMMANDS TO BE FIRED INSTEAD OF ALL OF THEM
 function programsDiv_changeScene(sceneToChangeTo) {
-    // then move to the new scene
     document.getElementById("programsDiv_currentSceneIndicator").value = sceneToChangeTo;
     // then access the currentScene and read all of the values
-    let currentSceneSubArray = programsDiv_scenes[sceneToChangeTo];
+    let currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
     // then go through the array and read the objects
     for(var i = 0; i < currentSceneSubArray.length; i++) {
         let object = currentSceneSubArray[i];
         let objectChannels = object.channels;
-        // then go through each channel and turn it to off
-        for(channelKey in objectChannels) {
-            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, objectChannels[channelKey]);
-        }
-    }
-    // then access the currentScene and read all of the values
-    currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
-    // then go through the array and read the objects
-    for(var i = 0; i < currentSceneSubArray.length; i++) {
-        let object = currentSceneSubArray[i];
-        objectChannels = object.channels;
         // then go through each channel and turn it to off
         for(channelKey in objectChannels) {
             findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
@@ -513,6 +501,18 @@ function programsDiv_changeScene(sceneToChangeTo) {
     }
     // then set the next scene
     programsDiv_currentScene = sceneToChangeTo;
+    // then access the currentScene and read all of the values
+    currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
+    // then go through the array and read the objects
+    for(var i = 0; i < currentSceneSubArray.length; i++) {
+        let object = currentSceneSubArray[i];
+        objectChannels = object.channels;
+        // then go through each channel and turn it to the value
+        for(channelKey in objectChannels) {
+            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, objectChannels[channelKey]);
+        }
+    }
+    
     
 }
 let programsDiv_syncToTimeIntervalId;
