@@ -174,6 +174,8 @@ var currentFixtureGroup = "";
 function controlDiv_useFixtureGroup(fixtureGroup, allowLoadFixture) {
     isFixtureGroup = true;
     currentFixtureGroup = fixtureGroup;
+    // THEN CLEAR THE FIXTURES ARRAY INDEX IN GROUP
+    fixturesArrayIndexInGroup = [];
     // then get the lights who are members of the fixtureGroup
     let fixtureIdsInGroup = fixturesGroupObject[fixtureGroup];
     for(var i = 0; i < fixtureIdsInGroup.length; i++) {
@@ -657,6 +659,7 @@ function findAndWriteDmx(channelFeature, value) {
         fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeature] = value;
         // then create a loop to repeat for each fixture in the fixturesArrayIndexInGroup
         for(var i = 0; i < fixturesArrayIndexInGroup.length; i++) {
+            console.log(i);
             // then get the start channel of the fixture
             let startAddress = fixturesArray[fixturesArrayIndexInGroup[i]].startAddress;
             let channelFeatureReduced = channelFeature-1;
