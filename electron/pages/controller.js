@@ -484,6 +484,8 @@ function programsDiv_currentSceneIndicatorValueChanged() {
         programsDiv_changeScene(val);
     }
 }
+// NEEDS ADAPTING TO ALLOW
+// FOR ALL COMMANDS TO BE FIRED AT ONCE AND ONLY THE CHANGED COMMANDS TO BE FIRED INSTEAD OF ALL OF THEM
 function programsDiv_changeScene(sceneToChangeTo) {
     // then move to the new scene
     document.getElementById("programsDiv_currentSceneIndicator").value = sceneToChangeTo;
@@ -659,7 +661,6 @@ function findAndWriteDmx(channelFeature, value) {
         fixturesGroupSliderValuesObject[currentFixtureGroup][channelFeature] = value;
         // then create a loop to repeat for each fixture in the fixturesArrayIndexInGroup
         for(var i = 0; i < fixturesArrayIndexInGroup.length; i++) {
-            console.log(i);
             // then get the start channel of the fixture
             let startAddress = fixturesArray[fixturesArrayIndexInGroup[i]].startAddress;
             let channelFeatureReduced = channelFeature-1;
