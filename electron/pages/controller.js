@@ -484,9 +484,9 @@ function programsDiv_currentSceneIndicatorValueChanged() {
         programsDiv_changeScene(val);
     }
 }
-// NEEDS ADAPTING TO ALLOW
-// FOR ALL COMMANDS TO BE FIRED AT ONCE AND ONLY THE CHANGED COMMANDS TO BE FIRED INSTEAD OF ALL OF THEM
+// The below could be adapted to make only the required channels to be changed however it is currently keeping up with the required speed FIX
 function programsDiv_changeScene(sceneToChangeTo) {
+    let lightChangesArray = [];
     document.getElementById("programsDiv_currentSceneIndicator").value = sceneToChangeTo;
     // then access the currentScene and read all of the values
     let currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
@@ -496,7 +496,7 @@ function programsDiv_changeScene(sceneToChangeTo) {
         let objectChannels = object.channels;
         // then go through each channel and turn it to off
         for(channelKey in objectChannels) {
-            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
+            lightChangesArray.push({"isFixtureGroup": object.isFixtureGroup, "fixtureId": object.fixtureId, "channelKey": channelKey, "value": 0});
         }
     }
     // then set the next scene
@@ -509,10 +509,14 @@ function programsDiv_changeScene(sceneToChangeTo) {
         objectChannels = object.channels;
         // then go through each channel and turn it to the value
         for(channelKey in objectChannels) {
-            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, objectChannels[channelKey]);
+            lightChangesArray.push({"isFixtureGroup": object.isFixtureGroup, "fixtureId": object.fixtureId, "channelKey": channelKey, "value": objectChannels[channelKey]});
         }
     }
-    
+    // then execute all of the changes
+    for(var i = 0; i < lightChangesArray.length; i++) {
+        // then get the i th object and fire off the correct command
+        findAndWriteDmxForScenes(lightChangesArray[i].isFixtureGroup, lightChangesArray[i].fixtureId, lightChangesArray[i].channelKey, lightChangesArray[i].value);
+    }
     
 }
 let programsDiv_syncToTimeIntervalId;
