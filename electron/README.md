@@ -168,7 +168,7 @@ The Properties:
 
 - **syncToTime** - this boolean tells the program to use times provided in the next property to sync the scenes to timings provided by the program
 
-- **timings** - this object contains a key as the time in ms from when the program is started and the property as the scene number, starting at 0 for scene 0
+- **timings** - this object contains a key as the scene number and the property as the time to fire the scene in ms, starting at 0 for scene 0 - scene 0 will be created as a blank scene so that you may start from scene 1 with programming
 
 - **scenes** - this array contains a nested array which then contains one object per fixture to control which has the following properties
 

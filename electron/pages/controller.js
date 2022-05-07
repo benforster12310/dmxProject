@@ -519,26 +519,56 @@ function programsDiv_changeScene(sceneToChangeTo) {
     }
     
 }
+// SyncToTime
 let programsDiv_syncToTimeIntervalId;
+let programsDiv_syncToTimeTimeStarted;
+let programsDiv_syncToTimeTimeStopped;
+let programsDiv_syncToTimeTimeStoppedDuration = 0;
+// then start the timer and stop it immediately
+programsDiv_syncToTimeTimeStarted = Date.now();
+programsDiv_syncToTimeTimeStopped = Date.now();
 function programsDiv_startStopSyncToTime() {
     if(programsDiv_startStopSyncToTimePaused) {
         document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Stop Synced To Time";
         // then as it is paused then start it again
         programsDiv_startStopSyncToTimePaused = false;
-        programsDiv_syncToTimeIntervalId = setInterval(function() {
-            // then increment the duration
-            programsDiv_startStopSyncToTimeDuration++
-            //document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
-        }, 1);
-        console.log(programsDiv_syncToTimeIntervalId);
+        // then work out the stopped duration
+        programsDiv_syncToTimeTimeStoppedDuration += (Date.now() - programsDiv_syncToTimeTimeStopped);
+        // then start the increment timer
+        function tmr() {
+            programsDiv_startStopSyncToTimeDuration = Date.now() - programsDiv_syncToTimeTimeStarted - programsDiv_syncToTimeTimeStoppedDuration;
+            // then check if the next scene should be triggered
+            if(programsDiv_startStopSyncToTimeDuration >= programsDiv_syncToTimeNextSceneAtMS) {
+                // then change the scene
+            }
+            console.log(programsDiv_startStopSyncToTimeDuration);
+            document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
+        }
+        programsDiv_syncToTimeIntervalId = setInterval(tmr, 10)
+        //console.log(programsDiv_syncToTimeIntervalId);
     }
     else {
         // then stop the sync to time bit
-        console.log(programsDiv_syncToTimeIntervalId);
+        programsDiv_syncToTimeTimeStopped = Date.now();
+        //console.log(programsDiv_syncToTimeIntervalId);
         clearInterval(programsDiv_syncToTimeIntervalId)
         document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Start Synced To Time";
         programsDiv_startStopSyncToTimePaused = true;
     }
+}
+let programsDiv_syncToTimeTimings = [];
+let programsDiv_syncToTimeUnusedTimings = [];
+let programsDiv_syncToTimeUsedTimings = [];
+let programsDiv_syncToTimeNextSceneAtMS = 0;
+let programsDiv_syncToTimeNextSceneNumber = 0;
+// then provide a function for working out which scene is next
+function programsDiv_syncToTimeCalculateNextScene() {
+
+}
+
+// SkipAfterInterval
+function programsDiv_startStopSkipAfterInterval() {
+
 }
 
 function programsDiv_displayProgramInterface() {
@@ -548,6 +578,10 @@ function programsDiv_displayProgramInterface() {
     programsDiv_syncToTime = programObject.syncToTime;
     programsDiv_numberOfScenes = programObject.scenes.length;
     programsDiv_scenes = programObject.scenes;
+    if(programsDiv_syncToTime) {
+        programsDiv_syncToTimeTimings = programObject.timings;
+        programsDiv_syncToTimeUnusedTimings = programObject.timings;
+    }
     // then make the nextScene and previousScene buttons and put them in an inline div with the scene number in a inputElement
     // make the previousScene button
     let previousSceneButton = document.createElement("button");
@@ -594,6 +628,7 @@ function programsDiv_displayProgramInterface() {
         durationIndicatorElement.setAttribute("min", "0");
         durationIndicatorElement.setAttribute("value", "0");
         durationIndicatorElement.setAttribute("onchange", "programsDiv_syncToTimeDurationIndicatorValueChanged()");
+        durationIndicatorElement.setAttribute("readonly", "true");
         document.getElementById("programsDiv_currentProgramDiv").appendChild(durationIndicatorElement);
         // then make the countdown timer until scene change
         let countdownSceneChangeIndicatorElement = document.createElement("input");
