@@ -567,6 +567,7 @@ function programsDiv_startStopSyncToTime() {
                 }
             }
             document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
+            document.getElementById("programsDiv_syncToTimeCountdownSceneChangeIndicator").value = programsDiv_syncToTimeNextSceneAtMS - programsDiv_startStopSyncToTimeDuration
         }
         programsDiv_syncToTimeIntervalId = setInterval(tmr, 10)
     }
