@@ -456,7 +456,7 @@ let programsDiv_loopOnFinish = false;
 let programsDiv_syncToTime = false;
 let programsDiv_numberOfScenes = 0;
 let programsDiv_currentScene = 0;
-let programsDiv_scenes;
+let programsDiv_scenes = [];
 let programsDiv_startStopSyncToTimeDuration = 0;
 let programsDiv_startStopSyncToTimePaused = true;
 
@@ -477,7 +477,7 @@ function programsDiv_nextScene() {
 }
 function programsDiv_currentSceneIndicatorValueChanged() {
     // then get the value
-    let val = document.getElementById("programsDiv_currentSceneIndicator").value;
+    let val = parseInt(document.getElementById("programsDiv_currentSceneIndicator").value);
     // then make sure that the value is correct
     if(val >= 0 && val <= programsDiv_numberOfScenes-1) {
         // then call the changeScene function
@@ -525,10 +525,6 @@ let programsDiv_syncToTimeIntervalId;
 let programsDiv_syncToTimeTimeStarted;
 let programsDiv_syncToTimeTimeStopped;
 let programsDiv_syncToTimeTimeStoppedDuration = 0;
-// then start the timer and stop it immediately
-programsDiv_syncToTimeTimeStarted = Date.now();
-programsDiv_syncToTimeTimeStopped = Date.now();
-
 let programsDiv_syncToTimeTimings = [];
 let programsDiv_syncToTimeUnusedTimings = [];
 let programsDiv_syncToTimeUsedTimings = [];
@@ -584,8 +580,25 @@ function programsDiv_startStopSyncToTime() {
 function programsDiv_startStopSkipAfterInterval() {
 
 }
+function programsDiv_clearLastScene() {
+    // then access the currentScene and read all of the values
+    let currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
+    // then go through the array and read the objects
+    for(var i = 0; i < currentSceneSubArray.length; i++) {
+        let object = currentSceneSubArray[i];
+        let objectChannels = object.channels;
+        // then go through each channel and turn it to off
+        for(channelKey in objectChannels) {
+            findAndWriteDmxForScenes(object.isFixtureGroup, object.fixtureId, channelKey, 0);
+        }
+    }
+    programsDiv_startStopSyncToTimePaused = true;
+}
 
 function programsDiv_displayProgramInterface() {
+    if(programsDiv_scenes.length != 0) {
+        programsDiv_clearLastScene();
+    }
     document.getElementById("programsDiv_currentProgramDiv").innerHTML = "";
     programsDiv_currentScene = 0;
     programsDiv_loopOnFinish = programObject.loopOnFinish;
@@ -593,6 +606,18 @@ function programsDiv_displayProgramInterface() {
     programsDiv_numberOfScenes = programObject.scenes.length;
     programsDiv_scenes = programObject.scenes;
     if(programsDiv_syncToTime) {
+        clearInterval(programsDiv_syncToTimeIntervalId);
+        programsDiv_syncToTimeTimeStarted;
+        programsDiv_syncToTimeTimeStopped;
+        programsDiv_syncToTimeTimeStoppedDuration = 0;
+        // then start the timer and stop it immediately
+        programsDiv_syncToTimeTimeStarted = Date.now();
+        programsDiv_syncToTimeTimeStopped = Date.now();
+        programsDiv_syncToTimeTimings = [];
+        programsDiv_syncToTimeUnusedTimings = [];
+        programsDiv_syncToTimeUsedTimings = [];
+        programsDiv_syncToTimeNextSceneAtMS = 0;
+        programsDiv_syncToTimeNextSceneNumber = 0;
         programsDiv_syncToTimeTimings = programObject.timings;
         programsDiv_syncToTimeUnusedTimings = programObject.timings;
         programsDiv_syncToTimeCalculateNextScene();
@@ -678,10 +703,6 @@ function programsDiv_displayProgramInterface() {
     intervalInputElement.setAttribute("onchange", "programsDiv_skipAfterIntervalInputValueChanged()");
     document.getElementById("programsDiv_currentProgramDiv").appendChild(intervalInputElement);
 
-    // then turn blackout on
-    if(!blackoutToggled) {
-        blackout();
-    }
     // then call the change scene function to initalise
     programsDiv_changeScene(0);
 }
