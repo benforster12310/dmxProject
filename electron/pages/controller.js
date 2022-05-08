@@ -504,6 +504,7 @@ function programsDiv_changeScene(sceneToChangeTo) {
     // then access the currentScene and read all of the values
     currentSceneSubArray = programsDiv_scenes[programsDiv_currentScene];
     // then go through the array and read the objects
+    console.log(currentSceneSubArray);
     for(var i = 0; i < currentSceneSubArray.length; i++) {
         let object = currentSceneSubArray[i];
         objectChannels = object.channels;
@@ -527,6 +528,23 @@ let programsDiv_syncToTimeTimeStoppedDuration = 0;
 // then start the timer and stop it immediately
 programsDiv_syncToTimeTimeStarted = Date.now();
 programsDiv_syncToTimeTimeStopped = Date.now();
+
+let programsDiv_syncToTimeTimings = [];
+let programsDiv_syncToTimeUnusedTimings = [];
+let programsDiv_syncToTimeUsedTimings = [];
+let programsDiv_syncToTimeNextSceneAtMS = 0;
+let programsDiv_syncToTimeNextSceneNumber = 0;
+// then provide a function for working out which scene is next
+function programsDiv_syncToTimeCalculateNextScene() {
+    // then read the first unused timing value
+    let timingObject = programsDiv_syncToTimeUnusedTimings.shift();
+    // then put it into the used timings
+    programsDiv_syncToTimeUsedTimings.push(timingObject)
+    console.log(timingObject);
+    console.log(programsDiv_syncToTimeUnusedTimings);
+    programsDiv_syncToTimeNextSceneNumber = Object.getOwnPropertyNames(timingObject)[0];
+    programsDiv_syncToTimeNextSceneAtMS = timingObject[programsDiv_syncToTimeNextSceneNumber];
+}
 function programsDiv_startStopSyncToTime() {
     if(programsDiv_startStopSyncToTimePaused) {
         document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Stop Synced To Time";
@@ -540,8 +558,18 @@ function programsDiv_startStopSyncToTime() {
             // then check if the next scene should be triggered
             if(programsDiv_startStopSyncToTimeDuration >= programsDiv_syncToTimeNextSceneAtMS) {
                 // then change the scene
+                if(programsDiv_syncToTimeUnusedTimings.length == 0) {
+                    // then stop the sync to time
+                    programsDiv_changeScene(programsDiv_syncToTimeNextSceneNumber);
+                    programsDiv_startStopSyncToTime();
+                    
+                }
+                else {
+                    programsDiv_changeScene(programsDiv_syncToTimeNextSceneNumber);
+                    programsDiv_syncToTimeCalculateNextScene();
+                }
             }
-            console.log(programsDiv_startStopSyncToTimeDuration);
+            //console.log(programsDiv_startStopSyncToTimeDuration);
             document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
         }
         programsDiv_syncToTimeIntervalId = setInterval(tmr, 10)
@@ -555,15 +583,6 @@ function programsDiv_startStopSyncToTime() {
         document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Start Synced To Time";
         programsDiv_startStopSyncToTimePaused = true;
     }
-}
-let programsDiv_syncToTimeTimings = [];
-let programsDiv_syncToTimeUnusedTimings = [];
-let programsDiv_syncToTimeUsedTimings = [];
-let programsDiv_syncToTimeNextSceneAtMS = 0;
-let programsDiv_syncToTimeNextSceneNumber = 0;
-// then provide a function for working out which scene is next
-function programsDiv_syncToTimeCalculateNextScene() {
-
 }
 
 // SkipAfterInterval
@@ -581,6 +600,7 @@ function programsDiv_displayProgramInterface() {
     if(programsDiv_syncToTime) {
         programsDiv_syncToTimeTimings = programObject.timings;
         programsDiv_syncToTimeUnusedTimings = programObject.timings;
+        programsDiv_syncToTimeCalculateNextScene();
     }
     // then make the nextScene and previousScene buttons and put them in an inline div with the scene number in a inputElement
     // make the previousScene button
