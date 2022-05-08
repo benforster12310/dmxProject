@@ -539,9 +539,7 @@ function programsDiv_syncToTimeCalculateNextScene() {
     // then read the first unused timing value
     let timingObject = programsDiv_syncToTimeUnusedTimings.shift();
     // then put it into the used timings
-    programsDiv_syncToTimeUsedTimings.push(timingObject)
-    console.log(timingObject);
-    console.log(programsDiv_syncToTimeUnusedTimings);
+    programsDiv_syncToTimeUsedTimings.push(timingObject);
     programsDiv_syncToTimeNextSceneNumber = Object.getOwnPropertyNames(timingObject)[0];
     programsDiv_syncToTimeNextSceneAtMS = timingObject[programsDiv_syncToTimeNextSceneNumber];
 }
@@ -560,25 +558,21 @@ function programsDiv_startStopSyncToTime() {
                 // then change the scene
                 if(programsDiv_syncToTimeUnusedTimings.length == 0) {
                     // then stop the sync to time
-                    programsDiv_changeScene(programsDiv_syncToTimeNextSceneNumber);
                     programsDiv_startStopSyncToTime();
-                    
+                    programsDiv_changeScene(programsDiv_syncToTimeNextSceneNumber);
                 }
                 else {
                     programsDiv_changeScene(programsDiv_syncToTimeNextSceneNumber);
                     programsDiv_syncToTimeCalculateNextScene();
                 }
             }
-            //console.log(programsDiv_startStopSyncToTimeDuration);
             document.getElementById("programsDiv_syncToTimeDurationIndicator").value = programsDiv_startStopSyncToTimeDuration;
         }
         programsDiv_syncToTimeIntervalId = setInterval(tmr, 10)
-        //console.log(programsDiv_syncToTimeIntervalId);
     }
     else {
         // then stop the sync to time bit
         programsDiv_syncToTimeTimeStopped = Date.now();
-        //console.log(programsDiv_syncToTimeIntervalId);
         clearInterval(programsDiv_syncToTimeIntervalId)
         document.getElementById("programsDiv_startStopSyncToTimeButton").innerHTML = "Start Synced To Time";
         programsDiv_startStopSyncToTimePaused = true;
