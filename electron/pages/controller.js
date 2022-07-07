@@ -577,8 +577,39 @@ function programsDiv_startStopSyncToTime() {
 }
 
 // SkipAfterInterval
+let programsDiv_startStopSkipAfterIntervalPaused = true;
+let programsDiv_startStopSkipAfterIntervalIntervalId;
+let programsDiv_startStopSkipAfterIntervalIntervalDuration = 0;
+function programsDiv_skipAfterIntervalInputValueChanged(id) {
+    // then get the interval
+    programsDiv_startStopSkipAfterIntervalIntervalDuration = parseInt(id.value);
+    if((programsDiv_startStopSkipAfterIntervalPaused)) {
+        // then clear the interval and put the new one on
+        clearInterval(programsDiv_startStopSkipAfterIntervalIntervalId);
+        programsDiv_startStopSkipAfterIntervalCallInterval();
+    }
+}
+function programsDiv_startStopSkipAfterIntervalCallInterval() {
+    programsDiv_startStopSkipAfterIntervalIntervalId = setInterval(programsDiv_startStopSkipAfterIntervalNextScene, programsDiv_startStopSkipAfterIntervalIntervalDuration);
+}
+function programsDiv_startStopSkipAfterIntervalNextScene() {
+    // then check if there is a next scene
+    if(programsDiv_scenes.length != programsDiv_currentScene) {
+        // then change the scene
+        programsDiv_changeScene(programsDiv_currentScene +1);
+    }
+}
 function programsDiv_startStopSkipAfterInterval() {
-
+    if(programsDiv_startStopSkipAfterIntervalPaused) {
+        // then start the interval
+        programsDiv_startStopSkipAfterIntervalCallInterval();
+        programsDiv_startStopSkipAfterIntervalPaused = true;
+    }
+    else {
+        // then stop the interval
+        clearInterval(programsDiv_startStopSkipAfterIntervalIntervalId);
+        programsDiv_startStopSkipAfterIntervalPaused = false;
+    }
 }
 function programsDiv_clearLastScene() {
     // then access the currentScene and read all of the values
@@ -667,7 +698,6 @@ function programsDiv_displayProgramInterface() {
         durationIndicatorElement.setAttribute("id", "programsDiv_syncToTimeDurationIndicator");
         durationIndicatorElement.setAttribute("min", "0");
         durationIndicatorElement.setAttribute("value", "0");
-        durationIndicatorElement.setAttribute("onchange", "programsDiv_syncToTimeDurationIndicatorValueChanged()");
         durationIndicatorElement.setAttribute("readonly", "true");
         document.getElementById("programsDiv_currentProgramDiv").appendChild(durationIndicatorElement);
         // then make the countdown timer until scene change
@@ -700,7 +730,7 @@ function programsDiv_displayProgramInterface() {
     intervalInputElement.setAttribute("id", "programsDiv_skipAfterIntervalInput");
     intervalInputElement.setAttribute("min", "0");
     intervalInputElement.setAttribute("value", "0");
-    intervalInputElement.setAttribute("onchange", "programsDiv_skipAfterIntervalInputValueChanged()");
+    intervalInputElement.setAttribute("onchange", "programsDiv_skipAfterIntervalInputValueChanged(this.id)");
     document.getElementById("programsDiv_currentProgramDiv").appendChild(intervalInputElement);
 
     // then call the change scene function to initalise
